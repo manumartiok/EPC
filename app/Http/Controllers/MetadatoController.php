@@ -36,7 +36,7 @@ class MetadatoController extends Controller
         $metadatos->descripcion=$request->descripcion;
 
         $metadatos->save();
-    return redirect()->route('adm.metadatos');
+        return redirect()->route('adm.metadatos')->with('success', 'Metadato creado correctamente.');
     }
 
     /**
@@ -63,19 +63,17 @@ class MetadatoController extends Controller
             $metadatos->descripcion=$request->descripcion;
 
         $metadatos->save();
-
-        return redirect()->route('adm.metadatos', ['metadato' => $metadatos->id]);
+        return redirect()->route('adm.metadatos')->with('success', 'Metadato actualizado correctamente.');
     }
     
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($metadatos_id){
+    public function destroy($metadatos_id)
+    {
         $metadatos = Metadato::find($metadatos_id);
-
         $metadatos->delete();
-    
-        return redirect()->route('adm.metadatos');
+        return redirect()->route('adm.metadatos')->with('success', 'Metadato eliminado correctamente.');
     }
 }

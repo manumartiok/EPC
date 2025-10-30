@@ -33,11 +33,25 @@ class RedController extends Controller
         $redes= new Red();
         $redes->orden=$request->orden;
         $redes->nombre=$request->nombre;
-        $redes->url=$request->url;
         $redes->icono=$request->icono;
 
+                // ✅ WhatsApp: genera URL completa
+        if ($request->icono === 'fa-brands fa-whatsapp') {
+            $numero = preg_replace('/[^0-9]/', '', $request->url);
+            $redes->url = 'https://wa.me/' . $numero;
+        }
+        // ✅ Email: genera mailto automático
+        elseif ($request->icono === 'fa-regular fa-envelope' || $request->icono === 'fa-solid fa-envelope') {
+            $correo = trim($request->url);
+            $redes->url = 'mailto:' . $correo;
+        }
+        // ✅ Otros: se guarda como viene
+        else {
+            $redes->url = $request->url;
+        }
+
         $redes->save();
-    return redirect()->route('adm.redes');
+        return redirect()->route('adm.redes')->with('success', 'Red social creada correctamente.');
     }
 
     /**
@@ -61,12 +75,25 @@ class RedController extends Controller
         }
             $redes->orden=$request->orden;
             $redes->nombre=$request->nombre;
-            $redes->url=$request->url;
             $redes->icono=$request->icono;
 
-        $redes->save();
+                    // ✅ WhatsApp: genera URL completa
+        if ($request->icono === 'fa-brands fa-whatsapp') {
+            $numero = preg_replace('/[^0-9]/', '', $request->url);
+            $redes->url = 'https://wa.me/' . $numero;
+        }
+        // ✅ Email: genera mailto automático
+        elseif ($request->icono === 'fa-regular fa-envelope' || $request->icono === 'fa-solid fa-envelope') {
+            $correo = trim($request->url);
+            $redes->url = 'mailto:' . $correo;
+        }
+        // ✅ Otros: se guarda como viene
+        else {
+            $redes->url = $request->url;
+        }
 
-        return redirect()->route('adm.redes', ['red' => $redes->id]);
+        $redes->save();
+        return redirect()->route('adm.redes')->with('success', 'Red social actualizada correctamente.');
     }
     
 
@@ -75,10 +102,8 @@ class RedController extends Controller
      */
     public function destroy($redes_id){
         $redes = Red::find($redes_id);
-
         $redes->delete();
-    
-        return redirect()->route('adm.redes');
+        return redirect()->route('adm.redes')->with('success', 'Red social eliminada correctamente.');
     }
       
 
@@ -86,11 +111,12 @@ class RedController extends Controller
         $redes=Red::find($redes_id);
         $redes->active= !$redes->active;
         $redes->save();
-        return redirect()->route('adm.redes');
-      }
-
+        $status = $redes->active ? 'activada' : 'desactivada';
+        return redirect()->route('adm.redes')->with('success', "Red social {$status} correctamente.");
+    }
       
-          public function reordenar(Request $request)
+
+    public function reordenar(Request $request)
     {
         foreach ($request->orden as $redes) {
             \App\Models\Red::where('id', $redes['id'])->update(['orden' => $redes['orden']]);

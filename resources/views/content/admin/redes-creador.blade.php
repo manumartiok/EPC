@@ -36,12 +36,14 @@
 
                     <div class="mb-4">
                         <label class="block text-gray-700 font-medium mb-2" for="url">URL</label>
-                        <input type="url" id="url" name="url" placeholder="Url" class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <input type="text" id="url" name="url" 
+                            :placeholder="urlPlaceholder"
+                            class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
 
                     <div class="mb-4">
                         <label class="block text-gray-700 font-medium mb-2" for="icono">Icono</label>
-                        <select name="icono" id="icono"
+                        <select name="icono" id="icono" v-model="selectedIcon"
                             class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
 
                             <option value="" disabled {{ empty($red->icono) ? 'selected' : '' }}>Seleccionar red...</option>
@@ -52,11 +54,38 @@
                             <option value="fa-brands fa-whatsapp" {{ ($red->icono ?? '') == 'fa-brands fa-whatsapp' ? 'selected' : '' }}>WhatsApp</option>
                             <option value="fa-brands fa-linkedin" {{ ($red->icono ?? '') == 'fa-brands fa-linkedin' ? 'selected' : '' }}>LinkedIn</option>
                             <option value="fa-brands fa-telegram" {{ ($red->icono ?? '') == 'fa-brands fa-telegram' ? 'selected' : '' }}>Telegram</option>
-                            <option value="fa-solid fa-envelope" {{ ($red->icono ?? '') == 'fa-solid fa-envelope' ? 'selected' : '' }}>Email</option>
+                            <option value="fa-regular fa-envelope" {{ ($red->icono ?? '') == 'fa-solid fa-envelope' ? 'selected' : '' }}>Email</option>
+                            <option value="fa-solid fa-location-dot" {{ ($red->icono ?? '') == 'fa-solid fa-location-dot' ? 'selected' : '' }}>Ubicacion</option>
                         </select>
                     </div>
                 <button type="submit" class="border rounded p-4 bg-white">Crear</button>
             </form>
         </div>            
     </div>
+
+<script>
+const { createApp } = Vue
+
+createApp({
+    data() {
+        return {
+            selectedIcon: '',
+            urlPlaceholder: 'URL completa'
+        }
+    },
+    watch: {
+        selectedIcon(newIcon) {
+            if (newIcon === 'fa-brands fa-whatsapp') {
+                this.urlPlaceholder = 'Ingresa solo el número (ej: 5491112345678)'
+            } 
+            else if (newIcon === 'fa-regular fa-envelope') {
+                this.urlPlaceholder = 'Ingresa solo el email'
+            }
+            else {
+                this.urlPlaceholder = 'URL completa'
+            }
+        }
+    }
+}).mount('#app')
+</script>
 @endsection

@@ -71,9 +71,9 @@ class NewsletterController extends Controller
         $newsletter = Newsletter::find($newsletter_id);
         if ($newsletter) {
             $newsletter->delete();
+            return redirect()->route('adm.newsletter')->with('success', 'Suscriptor eliminado correctamente.');
         }
-
-        return redirect()->route('adm.newsletter');
+        return redirect()->route('adm.newsletter')->with('error', 'No se encontró el suscriptor.');
     }
 
     /**
@@ -85,9 +85,10 @@ class NewsletterController extends Controller
         if ($newsletter) {
             $newsletter->active = !$newsletter->active;
             $newsletter->save();
+            $status = $newsletter->active ? 'activado' : 'desactivado';
+            return redirect()->route('adm.newsletter')->with('success', "Suscriptor {$status} correctamente.");
         }
-
-        return redirect()->route('adm.newsletter');
+        return redirect()->route('adm.newsletter')->with('error', 'No se encontró el suscriptor.');
     }
 
     /**

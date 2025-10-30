@@ -38,7 +38,7 @@ class UsuarioController extends Controller
         $usuarios->rol=$request->rol;
 
         $usuarios->save();
-    return redirect()->route('adm.usuarios');
+        return redirect()->route('adm.usuarios')->with('success', 'Usuario creado correctamente.');
     }
 
     /**
@@ -76,27 +76,27 @@ class UsuarioController extends Controller
         }
 
         $usuarios->save();
-
-        return redirect()->route('adm.usuarios', ['usuario' => $usuarios->id]);
+        return redirect()->route('adm.usuarios')->with('success', 'Usuario actualizado correctamente.');
     }
     
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($usuarios_id){
+    public function destroy($usuarios_id)
+    {
         $usuarios = Usuario::find($usuarios_id);
-
         $usuarios->delete();
-    
-        return redirect()->route('adm.usuarios');
+        return redirect()->route('adm.usuarios')->with('success', 'Usuario eliminado correctamente.');
     }
       
 
-    public function switch($usuarios_id){
+    public function switch($usuarios_id)
+    {
         $usuarios=Usuario::find($usuarios_id);
         $usuarios->active= !$usuarios->active;
         $usuarios->save();
-        return redirect()->route('adm.usuarios');
-      }
+        $status = $usuarios->active ? 'activado' : 'desactivado';
+        return redirect()->route('adm.usuarios')->with('success', "Usuario {$status} correctamente.");
+    }
 }

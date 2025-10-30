@@ -57,6 +57,24 @@
     <div class="flex-1 flex flex-col">
       @include('layouts.navbar')
       <main class="flex-1 overflow-auto p-6">
+           {{-- Mensajes de feedback --}}
+        @if(session('success'))
+                <div id="feedback-message" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+                    <span class="block sm:inline">{{ session('success') }}</span>
+                    <span class="absolute top-0 bottom-0 right-0 px-4 py-3">
+                        <svg class="fill-current h-6 w-6 text-green-700 cursor-pointer" role="button" onclick="this.parentElement.parentElement.remove();" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Cerrar</title><path d="M14.348 5.652a.5.5 0 0 0-.707 0L10 9.293 6.36 5.652a.5.5 0 1 0-.707.707L9.293 10l-3.64 3.64a.5.5 0 0 0 .707.707L10 10.707l3.64 3.64a.5.5 0 0 0 .707-.707L10.707 10l3.64-3.64a.5.5 0 0 0 0-.707z"/></svg>
+                    </span>
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div id="feedback-message" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                    <span class="block sm:inline">{{ session('error') }}</span>
+                    <span class="absolute top-0 bottom-0 right-0 px-4 py-3">
+                        <svg class="fill-current h-6 w-6 text-red-700 cursor-pointer" role="button" onclick="this.parentElement.parentElement.remove();" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Cerrar</title><path d="M14.348 5.652a.5.5 0 0 0-.707 0L10 9.293 6.36 5.652a.5.5 0 1 0-.707.707L9.293 10l-3.64 3.64a.5.5 0 0 0 .707.707L10 10.707l3.64 3.64a.5.5 0 0 0 .707-.707L10.707 10l3.64-3.64a.5.5 0 0 0 0-.707z"/></svg>
+                    </span>
+                </div>
+            @endif
         @yield('content')
       </main>
     </div>
@@ -122,17 +140,18 @@ function activarOrdenDragDrop(selector, url) {
 
             // Solo actualizamos las filas que NO sean encabezados de categoría
          tbody.querySelectorAll('tr:not(.no-ordena)').forEach((fila, index) => {
-              const letra = String.fromCharCode(65 + index); // A, B, C...
-              const nuevaLetra = letra + letra; // AA, BB, CC...
+            const letra = String.fromCharCode(65 + Math.floor(index / 26)); // A, B, C...
+            const subletra = String.fromCharCode(65 + (index % 26)); // A, B, C...
+            const nuevaLetra = letra + subletra; // AA, AB, AC, AD...
 
-              const celdaOrden = fila.querySelector('td:first-child');
-              if (celdaOrden) celdaOrden.textContent = nuevaLetra;
+            const celdaOrden = fila.querySelector('td:first-child');
+            if (celdaOrden) celdaOrden.textContent = nuevaLetra;
 
-              orden.push({
-                  id: fila.dataset.id,
-                  orden: nuevaLetra
-              });
-          });
+            orden.push({
+                id: fila.dataset.id,
+                orden: nuevaLetra
+            });
+        });
 
             fetch(url, {
                 method: 'POST',
@@ -148,23 +167,6 @@ function activarOrdenDragDrop(selector, url) {
         }
     });
 }
-
-// CKEditor configuración completa
-document.addEventListener("DOMContentLoaded", function() {
-    const editors = document.querySelectorAll('.ckeditor');
-
-    editors.forEach(textarea => {
-        const height = textarea.dataset.height || '300';
-        ClassicEditor.create(textarea)
-            .then(editor => {
-                const editable = editor.ui.view.editable.element;
-                editable.style.minHeight = height + 'px';
-                editable.style.height = 'auto';
-                editable.style.overflowY = 'auto';
-            })
-            .catch(error => console.error(error));
-    });
-});
   </script>
 
    @stack('scripts')  {{-- AGREGAR ESTA LÍNEA --}}

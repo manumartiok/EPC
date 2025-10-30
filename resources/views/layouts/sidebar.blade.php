@@ -83,6 +83,7 @@
         <ul class="submenu hidden pl-8 mt-1 space-y-1">
           <li><a href="" class="block py-1 px-2 hover:bg-gray-600 rounded">Banner</a></li>
           <li><a href="" class="block py-1 px-2 hover:bg-gray-600 rounded">Contenido</a></li>
+          <li><a href="{{route('adm.redes')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Redes Sociales</a></li>
         </ul>
       </li>
       <li class="group">
@@ -113,7 +114,6 @@
     <ul>
       <li><a href="{{route('adm.newsletter')}}" class="block py-2 px-3 hover:bg-gray-700 rounded transition"><i class="fa-solid fa-newspaper mr-2"></i>Newsletter</a></li>
       <li><a href="" class="block py-2 px-3 hover:bg-gray-700 rounded transition"><i class="fas fa-image mr-2"></i>Logos</a></li>
-      <li><a href="{{route('adm.redes')}}" class="block py-2 px-3 hover:bg-gray-700 rounded transition"><i class="fas fa-share-alt mr-2"></i>Redes sociales</a></li>
       <li><a href="{{route('adm.usuarios')}}" class="block py-2 px-3 hover:bg-gray-700 rounded transition"><i class="fas fa-users mr-2"></i>Usuarios</a></li>
       <li><a href="{{route('adm.metadatos')}}" class="block py-2 px-3 hover:bg-gray-700 rounded transition"><i class="fas fa-cog mr-2"></i>Metadatos</a></li>
     </ul>
