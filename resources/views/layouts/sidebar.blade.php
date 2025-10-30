@@ -1,10 +1,10 @@
 @php
-    $logos = App\Models\Logo::first(); 
+
 @endphp
 <aside id="sidebar" class="w-64 bg-gray-800 text-white min-h-screen p-4 sidebar-transition overflow-hidden">
   <div>
     <div class="flex flex-col items-center mb-4">
-     <a href="{{route('adm.dashboard')}}"><img src="{{$logos->foto_nav}}" alt="Logo" class="h-[40px] mb-[10px]"></a> 
+     <a href="{{route('adm.dashboard')}}"><img src="" alt="Logo" class="h-[40px] mb-[10px]"></a> 
       <h2 class="text-xl font-bold ml-2">Administrador</h2>
     </div>
   </div>
@@ -19,8 +19,8 @@
           <i class="fas fa-chevron-down transition-transform duration-300 group-[.open]:rotate-180"></i>
         </button>
         <ul class="submenu hidden pl-8 mt-1 space-y-1">
-          <li><a href="{{route('adm.home-ban')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Banner</a></li>
-          <li><a href="{{route('adm.home')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Contenido</a></li>
+          <li><a href="" class="block py-1 px-2 hover:bg-gray-600 rounded">Banner</a></li>
+          <li><a href="" class="block py-1 px-2 hover:bg-gray-600 rounded">Contenido</a></li>
         </ul>
       </li>
       <li class="group">
@@ -29,8 +29,8 @@
           <i class="fas fa-chevron-down transition-transform duration-300 group-[.open]:rotate-180"></i>
         </button>
         <ul class="submenu hidden pl-8 mt-1 space-y-1">
-          <li><a href="{{route('adm.nosotros-ban')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Banner</a></li>
-          <li><a href="{{route('adm.nosotros')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Contenido</a></li>
+          <li><a href="" class="block py-1 px-2 hover:bg-gray-600 rounded">Banner</a></li>
+          <li><a href="" class="block py-1 px-2 hover:bg-gray-600 rounded">Contenido</a></li>
         </ul>
       </li>
       <li class="group">
@@ -39,8 +39,8 @@
           <i class="fas fa-chevron-down transition-transform duration-300 group-[.open]:rotate-180"></i>
         </button>
         <ul class="submenu hidden pl-8 mt-1 space-y-1">
-          <li><a href="{{route('adm.comercializacion-ban')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Banner</a></li>
-          <li><a href="{{route('adm.comercializacion')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Contenido</a></li>
+          <li><a href="" class="block py-1 px-2 hover:bg-gray-600 rounded">Banner</a></li>
+          <li><a href="" class="block py-1 px-2 hover:bg-gray-600 rounded">Contenido</a></li>
         </ul>
       </li>
       <li class="group">
@@ -49,9 +49,9 @@
           <i class="fas fa-chevron-down transition-transform duration-300 group-[.open]:rotate-180"></i>
         </button>
         <ul class="submenu hidden pl-8 mt-1 space-y-1">
-          <li><a href="{{route('adm.productos-ban')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Banner</a></li>
-          <li><a href="{{route('adm.categorias')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Categorias</a></li>
-          <li><a href="{{route('adm.productos')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Productos</a></li>
+          <li><a href="" class="block py-1 px-2 hover:bg-gray-600 rounded">Banner</a></li>
+          <li><a href="" class="block py-1 px-2 hover:bg-gray-600 rounded">Categorias</a></li>
+          <li><a href="" class="block py-1 px-2 hover:bg-gray-600 rounded">Productos</a></li>
         </ul>
       </li>
       <li class="group">
@@ -60,8 +60,8 @@
           <i class="fas fa-chevron-down transition-transform duration-300 group-[.open]:rotate-180"></i>
         </button>
         <ul class="submenu hidden pl-8 mt-1 space-y-1">
-          <li><a href="{{route('adm.clientes-ban')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Banner</a></li>
-          <li><a href="{{route('adm.clientes')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Clientes</a></li>
+          <li><a href="" class="block py-1 px-2 hover:bg-gray-600 rounded">Banner</a></li>
+          <li><a href="" class="block py-1 px-2 hover:bg-gray-600 rounded">Clientes</a></li>
         </ul>
       </li>
       <li class="group">
@@ -70,9 +70,9 @@
           <i class="fas fa-chevron-down transition-transform duration-300 group-[.open]:rotate-180"></i>
         </button>
         <ul class="submenu hidden pl-8 mt-1 space-y-1">
-          <li><a href="{{route('adm.institucional-ban')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Banner</a></li>
-          <li><a href="{{route('adm.institucional')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Contenido</a></li>
-          <li><a href="{{route('adm.institucional-persona')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Persona</a></li>
+          <li><a href="" class="block py-1 px-2 hover:bg-gray-600 rounded">Banner</a></li>
+          <li><a href="" class="block py-1 px-2 hover:bg-gray-600 rounded">Contenido</a></li>
+          <li><a href="" class="block py-1 px-2 hover:bg-gray-600 rounded">Persona</a></li>
         </ul>
       </li>
       <li class="group">
@@ -81,8 +81,8 @@
           <i class="fas fa-chevron-down transition-transform duration-300 group-[.open]:rotate-180"></i>
         </button>
         <ul class="submenu hidden pl-8 mt-1 space-y-1">
-          <li><a href="{{route('adm.contacto-ban')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Banner</a></li>
-          <li><a href="{{route('adm.contacto')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Contenido</a></li>
+          <li><a href="" class="block py-1 px-2 hover:bg-gray-600 rounded">Banner</a></li>
+          <li><a href="" class="block py-1 px-2 hover:bg-gray-600 rounded">Contenido</a></li>
         </ul>
       </li>
       <li class="group">
@@ -91,7 +91,7 @@
           <i class="fas fa-chevron-down transition-transform duration-300 group-[.open]:rotate-180"></i>
         </button>
         <ul class="submenu hidden pl-8 mt-1 space-y-1">
-          <li><a href="{{route('adm.solicitud-ban')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Banner</a></li>
+          <li><a href="" class="block py-1 px-2 hover:bg-gray-600 rounded">Banner</a></li>
         </ul>
       </li>
        <li class="group">
@@ -100,7 +100,7 @@
           <i class="fas fa-chevron-down transition-transform duration-300 group-[.open]:rotate-180"></i>
         </button>
         <ul class="submenu hidden pl-8 mt-1 space-y-1">
-          <li><a href="{{route('adm.servicios')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Manejar servicios</a></li>
+          <li><a href="" class="block py-1 px-2 hover:bg-gray-600 rounded">Manejar servicios</a></li>
         </ul>
       </li>
     </ul>
@@ -112,7 +112,7 @@
   <div>
     <ul>
       <li><a href="{{route('adm.newsletter')}}" class="block py-2 px-3 hover:bg-gray-700 rounded transition"><i class="fa-solid fa-newspaper mr-2"></i>Newsletter</a></li>
-      <li><a href="{{route('adm.logo')}}" class="block py-2 px-3 hover:bg-gray-700 rounded transition"><i class="fas fa-image mr-2"></i>Logos</a></li>
+      <li><a href="" class="block py-2 px-3 hover:bg-gray-700 rounded transition"><i class="fas fa-image mr-2"></i>Logos</a></li>
       <li><a href="{{route('adm.redes')}}" class="block py-2 px-3 hover:bg-gray-700 rounded transition"><i class="fas fa-share-alt mr-2"></i>Redes sociales</a></li>
       <li><a href="{{route('adm.usuarios')}}" class="block py-2 px-3 hover:bg-gray-700 rounded transition"><i class="fas fa-users mr-2"></i>Usuarios</a></li>
       <li><a href="{{route('adm.metadatos')}}" class="block py-2 px-3 hover:bg-gray-700 rounded transition"><i class="fas fa-cog mr-2"></i>Metadatos</a></li>
