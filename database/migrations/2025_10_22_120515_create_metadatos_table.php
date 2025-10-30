@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('metadatos', function (Blueprint $table) {
             $table->id();
             $table->string('seccion')->nullable();
-            $table->string('keywords')->nullable();
+            $table->text('keywords')->nullable();
             $table->text('descripcion')->nullable();
             $table->timestamps();
         });
