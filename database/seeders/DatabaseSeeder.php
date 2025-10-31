@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
         Usuario::create([
             'usuario' => 'pablo',
             'contraseña' => Hash::make('pablopablo'),
+            'rol' => 'Administrador',
         ]);
     }
 }
