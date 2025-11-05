@@ -44,8 +44,26 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
     {{-- google font  --}}
     <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap" rel="stylesheet">
+    {{-- editor quill --}}
+     <link href="https://cdn.quilljs.com/1.3.6/quill.core.css" rel="stylesheet">
 </head>
 <body class="h-full flex flex-col">
+
+        <style>
+/* Alineaciones de texto de Quill (forzadas) */
+.ql-align-center {
+    text-align: center !important;
+}
+.ql-align-right {
+    text-align: right !important;
+}
+.ql-align-justify {
+    text-align: justify !important;
+}
+.ql-align-left {
+    text-align: left !important;
+}
+</style>
 
     @if($whatsapp)
     <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $whatsapp->url) }}" target="_blank" class="fixed bottom-[40px] right-[25px] z-50">
