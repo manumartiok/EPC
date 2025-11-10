@@ -167,10 +167,20 @@
                 <h3 class="text-[20px] font-[700]">Contacto</h3>
                 <div class=" flex flex-col items-start gap-[20px] px-[5%] lg:px-[0%]">
                     @foreach($redes as $red)
-                    <div class="flex gap-[10px] items-center">
-                       <i class="{{$red->icono}} text-white "></i><a href="{{$red->url}}" class=" hover:underline hover:scale-100 max-w-[200px]"><h3 class=" ">{{$red->nombre}}</h3></a> 
+                    <div class="flex gap-[18px] items-center">
+                        @if(!empty($red->url))
+                            <a href="{{ $red->url }}" class="flex items-center gap-[18px] transition">
+                                <i class="{{ $red->icono }}  text-[15px]"></i>
+                                <h3 class="text-[16px]">{{ $red->nombre }}</h3>
+                            </a>
+                        @else
+                            <div class="flex items-center gap-[18px] ">
+                                <i class="{{ $red->icono }} text-[15px] "></i>
+                                <h3 class="text-[16px]">{{ $red->nombre }}</h3>
+                            </div>
+                        @endif
                     </div>
-                    @endforeach
+                     @endforeach
                 </div>
             </div>
         </div>
