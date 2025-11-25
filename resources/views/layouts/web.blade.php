@@ -44,32 +44,16 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
     {{-- google font  --}}
     <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap" rel="stylesheet">
-    {{-- editor quill --}}
-     <link href="https://cdn.quilljs.com/1.3.6/quill.core.css" rel="stylesheet">
+
 </head>
 <body class="h-full flex flex-col">
 
-        <style>
-/* Alineaciones de texto de Quill (forzadas) */
-.ql-align-center {
-    text-align: center !important;
-}
-.ql-align-right {
-    text-align: right !important;
-}
-.ql-align-justify {
-    text-align: justify !important;
-}
-.ql-align-left {
-    text-align: left !important;
-}
-</style>
 
-    @if($whatsapp)
-    <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $whatsapp->url) }}" target="_blank" class="fixed bottom-[40px] right-[25px] z-50">
+   {{-- @if($contacto_contenido->whatsapp)
+    <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $contacto_contenido->whatsapp) }}" target="_blank" class="fixed bottom-[40px] right-[25px] z-[900]">
         <img src="/assets/img/whatsapp.png" alt="Chat" class=" cursor-pointer">
     </a>
-    @endif
+    @endif --}}
     <!-- header --> 
 
      <!-- navbar -->
@@ -91,16 +75,16 @@
             
             <!-- Menú centrado -->
             <div class="flex-1 flex justify-between mr-[80px] font-[400] text-[14px]">
-                <a href="{{ route('nosotros') }}" class="{{ Request::is('nosotros') ? 'font-bold' : '' }}">Nosotros</a>
-                <a href="{{ route('comercializacion') }}" class="{{ Request::is('comercializacion*') ? 'font-bold' : '' }}">Comercialización de hidrocarburos</a>
-                <a href="{{ route('productos') }}" class="{{ Request::is('productos*') ? 'font-bold' : '' }}">Productos</a>
-                <a href="{{ route('clientes') }}" class="{{ Request::is('clientes*') ? 'font-bold' : '' }}">Clientes</a>
-                <a href="{{ route('institucional') }}" class="{{ Request::is('institucional*') ? 'font-bold' : '' }}">Institucional</a>
-                <a href="{{ route('contacto') }}" class="{{ Request::is('contacto') ? 'font-bold' : '' }}">Contacto</a>
+                <a href="" class="{{ Request::is('') ? 'font-bold' : '' }}">Nosotros</a>
+                <a href="" class="{{ Request::is('') ? 'font-bold' : '' }}">Comercialización de hidrocarburos</a>
+                <a href="" class="{{ Request::is('') ? 'font-bold' : '' }}">Productos</a>
+                <a href="" class="{{ Request::is('') ? 'font-bold' : '' }}">Clientes</a>
+                <a href="" class="{{ Request::is('') ? 'font-bold' : '' }}">Institucional</a>
+                <a href="" class="{{ Request::is('') ? 'font-bold' : '' }}">Contacto</a>
             </div>
 
-            <a href="{{ route('solicitud') }}" class="max-w-[225px] w-full h-[41px] border rounded-[20px] flex justify-center items-center transition
-            {{ Request::is('solicitud') 
+            <a href="{{ route('') }}" class="max-w-[225px] w-full h-[41px] border rounded-[20px] flex justify-center items-center transition
+            {{ Request::is('') 
             ? 'bg-[#0A3858] text-white border-white' 
             : 'bg-white text-[#0A3858] border-[#0A3858]' }}">
                Solicitud de presupuesto
@@ -111,14 +95,14 @@
         <!-- Menú mobile -->
         <div id="mobile-menu" class="hidden absolute top-[90px] left-0 w-full ">
             <div class="flex flex-col items-center gap-4 bg-white py-6 shadow-md z-40">
-                <a href="{{ route('nosotros') }}" class="text-[#0A3858] text-[16px] font-semibold hover:text-[#5FBB46]">Nosotros</a>
-                <a href="{{ route('comercializacion') }}" class="text-[#0A3858] text-[16px] font-semibold hover:text-[#5FBB46]">Comercialización de hidrocarburos</a>
-                <a href="{{ route('productos') }}" class="text-[#0A3858] text-[16px] font-semibold hover:text-[#5FBB46]">Productos</a>
-                <a href="{{ route('clientes') }}" class="text-[#0A3858] text-[16px] font-semibold hover:text-[#5FBB46]">Clientes</a>
-                <a href="{{ route('institucional') }}" class="text-[#0A3858] text-[16px] font-semibold hover:text-[#5FBB46]">Institucional</a>
-                <a href="{{ route('contacto') }}" class="text-[#0A3858] text-[16px] font-semibold hover:text-[#5FBB46]">Contacto</a>
+                <a href="{{ route('') }}" class="text-[#0A3858] text-[16px] font-semibold hover:text-[#5FBB46]">Nosotros</a>
+                <a href="{{ route('') }}" class="text-[#0A3858] text-[16px] font-semibold hover:text-[#5FBB46]">Comercialización de hidrocarburos</a>
+                <a href="{{ route('') }}" class="text-[#0A3858] text-[16px] font-semibold hover:text-[#5FBB46]">Productos</a>
+                <a href="{{ route('') }}" class="text-[#0A3858] text-[16px] font-semibold hover:text-[#5FBB46]">Clientes</a>
+                <a href="{{ route('') }}" class="text-[#0A3858] text-[16px] font-semibold hover:text-[#5FBB46]">Institucional</a>
+                <a href="{{ route('') }}" class="text-[#0A3858] text-[16px] font-semibold hover:text-[#5FBB46]">Contacto</a>
                 
-                <a href="{{ route('solicitud') }}" class="mt-4 w-[225px] h-[41px] border border-[#0A3858] rounded-[20px] bg-[#0A3858] text-white flex justify-center items-center">
+                <a href="{{ route('') }}" class="mt-4 w-[225px] h-[41px] border border-[#0A3858] rounded-[20px] bg-[#0A3858] text-white flex justify-center items-center">
                     Solicitud de presupuesto
                 </a>
             </div>
@@ -142,12 +126,12 @@
                 <ul class="flex flex-col gap-[30px]">
                     <h3 class="text-[20px] font-[700]">Secciones</h3>
                     <div class="flex flex-col justify-between text-[16px] h-[200px] max-w-[132px]">
-                            <li><a href="{{route('nosotros')}}" class=" hover:underline">Nosotros</a></li>
-                            <li><a href="{{route('comercializacion')}}" class=" hover:underline">Comercialización de Hidrocarburos</a></li>
-                            <li><a href="{{route('productos')}}" class=" hover:underline">Productos</a></li>
-                            <li><a href="{{route('clientes')}}" class=" hover:underline">Clientes</a></li>
-                            <li><a href="{{route('institucional')}}" class=" hover:underline">Institucional</a></li>
-                            <li><a href="{{route('contacto')}}" class=" hover:underline">Contacto</a></li>
+                            <li><a href="{{route('')}}" class=" hover:underline">Nosotros</a></li>
+                            <li><a href="{{route('')}}" class=" hover:underline">Comercialización de Hidrocarburos</a></li>
+                            <li><a href="{{route('')}}" class=" hover:underline">Productos</a></li>
+                            <li><a href="{{route('')}}" class=" hover:underline">Clientes</a></li>
+                            <li><a href="{{route('')}}" class=" hover:underline">Institucional</a></li>
+                            <li><a href="{{route('')}}" class=" hover:underline">Contacto</a></li>
                     </div>
                 </ul>
             </div>
@@ -166,7 +150,7 @@
             <div class="flex flex-col text-center lg:text-start pt-[15px] gap-[10px] lg:gap-[30px]">
                 <h3 class="text-[20px] font-[700]">Contacto</h3>
                 <div class=" flex flex-col items-start gap-[20px] px-[5%] lg:px-[0%]">
-                    @foreach($redes as $red)
+                    {{-- @foreach($redes as $red)
                     <div class="flex gap-[18px] items-center">
                         @if(!empty($red->url))
                             <a href="{{ $red->url }}" class="flex items-center gap-[18px] transition">
@@ -180,7 +164,7 @@
                             </div>
                         @endif
                     </div>
-                     @endforeach
+                     @endforeach --}}
                 </div>
             </div>
         </div>
@@ -199,6 +183,9 @@
 
     <!-- Sweet Alert -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- CKEditor 5 FULL BUILD -->
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/super-build/ckeditor.js"></script>
 
     @yield('scripts')
 

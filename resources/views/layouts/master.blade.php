@@ -14,8 +14,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   {{-- font awesome  --}}
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
-  {{-- Quill.js CSS --}}
-<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+
   {{-- Css --}}
   <link rel="stylesheet" href="{{asset('assets/css/style.css')}}">
 
@@ -24,7 +23,7 @@
 
 
    <script src="{{ asset('js/vue.js') }}" defer></script>
-   <script src="{{ asset('js/ckeditor-custom.js') }}" defer></script>
+  
   <style>
     .sidebar-transition {
       transition: all 0.3s ease-in-out;
@@ -81,8 +80,8 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-  {{-- Quill.js JS --}}
-<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+<!-- CKEditor 5 FULL BUILD -->
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/super-build/ckeditor.js"></script>
 
   <script>
     $(document).ready(function() {
