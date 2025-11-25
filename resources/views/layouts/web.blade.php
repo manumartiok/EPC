@@ -59,7 +59,7 @@
             
             <!-- Logo -->
             <div class="h-[53px] w-[222px] flex-shrink-0">
-                <a href="{{route('home')}}"><img src="{{$logos->foto_nav}}" alt="Logo" class=""></a>
+                {{-- <a href="{{route('home')}}"><img src="{{$logos->foto_nav}}" alt="Logo" class=""></a> --}}
             </div>
             
             <!-- Botón Hamburguesa (solo en móvil) -->
@@ -92,14 +92,14 @@
         <!-- Menú mobile -->
         <div id="mobile-menu" class="hidden absolute top-[90px] left-0 w-full ">
             <div class="flex flex-col items-center gap-4 bg-white py-6 shadow-md z-40">
-                <a href="{{ route('') }}" class="text-[#0A3858] text-[16px] font-semibold hover:text-[#5FBB46]">Nosotros</a>
-                <a href="{{ route('') }}" class="text-[#0A3858] text-[16px] font-semibold hover:text-[#5FBB46]">Comercialización de hidrocarburos</a>
-                <a href="{{ route('') }}" class="text-[#0A3858] text-[16px] font-semibold hover:text-[#5FBB46]">Productos</a>
-                <a href="{{ route('') }}" class="text-[#0A3858] text-[16px] font-semibold hover:text-[#5FBB46]">Clientes</a>
-                <a href="{{ route('') }}" class="text-[#0A3858] text-[16px] font-semibold hover:text-[#5FBB46]">Institucional</a>
-                <a href="{{ route('') }}" class="text-[#0A3858] text-[16px] font-semibold hover:text-[#5FBB46]">Contacto</a>
+                <a href="" class="text-[#0A3858] text-[16px] font-semibold hover:text-[#5FBB46]">Nosotros</a>
+                <a href="" class="text-[#0A3858] text-[16px] font-semibold hover:text-[#5FBB46]">Comercialización de hidrocarburos</a>
+                <a href="" class="text-[#0A3858] text-[16px] font-semibold hover:text-[#5FBB46]">Productos</a>
+                <a href="" class="text-[#0A3858] text-[16px] font-semibold hover:text-[#5FBB46]">Clientes</a>
+                <a href="" class="text-[#0A3858] text-[16px] font-semibold hover:text-[#5FBB46]">Institucional</a>
+                <a href="" class="text-[#0A3858] text-[16px] font-semibold hover:text-[#5FBB46]">Contacto</a>
                 
-                <a href="{{ route('') }}" class="mt-4 w-[225px] h-[41px] border border-[#0A3858] rounded-[20px] bg-[#0A3858] text-white flex justify-center items-center">
+                <a href="" class="mt-4 w-[225px] h-[41px] border border-[#0A3858] rounded-[20px] bg-[#0A3858] text-white flex justify-center items-center">
                     Solicitud de presupuesto
                 </a>
             </div>
@@ -117,18 +117,18 @@
 
         <div class="h-full w-full max-w-[1366px] mx-auto px-[73px] pt-[45px] pb-[35px] flex flex-col lg:flex-row justify-center lg:justify-between items-center lg:items-start">
             <div class="">
-                    <img src="{{$logos->foto_footer}}" alt="" class="h-[53px] w-[222px]">
+                    {{-- <img src="{{$logos->foto_footer}}" alt="" class="h-[53px] w-[222px]"> --}}
             </div>
             <div class=" hidden lg:flex pt-[15px]">
                 <ul class="flex flex-col gap-[30px]">
                     <h3 class="text-[20px] font-[700]">Secciones</h3>
                     <div class="flex flex-col justify-between text-[16px] h-[200px] max-w-[132px]">
-                            <li><a href="{{route('')}}" class=" hover:underline">Nosotros</a></li>
-                            <li><a href="{{route('')}}" class=" hover:underline">Comercialización de Hidrocarburos</a></li>
-                            <li><a href="{{route('')}}" class=" hover:underline">Productos</a></li>
-                            <li><a href="{{route('')}}" class=" hover:underline">Clientes</a></li>
-                            <li><a href="{{route('')}}" class=" hover:underline">Institucional</a></li>
-                            <li><a href="{{route('')}}" class=" hover:underline">Contacto</a></li>
+                            <li><a href="" class=" hover:underline">Nosotros</a></li>
+                            <li><a href="" class=" hover:underline">Comercialización de Hidrocarburos</a></li>
+                            <li><a href="" class=" hover:underline">Productos</a></li>
+                            <li><a href="" class=" hover:underline">Clientes</a></li>
+                            <li><a href="" class=" hover:underline">Institucional</a></li>
+                            <li><a href="" class=" hover:underline">Contacto</a></li>
                     </div>
                 </ul>
             </div>

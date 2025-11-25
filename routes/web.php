@@ -9,6 +9,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PerfilController;
 
 use App\Http\Controllers\NewsletterController;
+use App\Http\Controllers\LogoController;
 use App\Http\Controllers\RedController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\MetadatoController;
@@ -33,6 +34,9 @@ Route::middleware(AdminAuth::class)->group(function () {
     Route::get('/admin/newsletter/switch/{newsletter_id}', [NewsletterController::class,'switch'])->name('adm.newsletter-switch');
     Route::post('/admin/newsletter/reordenar', [NewsletterController::class, 'reordenar'])->name('adm.newsletter-reordenar');
 
+    //logo
+    Route::get('/admin/logo', [LogoController::class, 'show'])->name('adm.logo');
+    Route::post('/admin/logo/update', [LogoController::class,'update'])->name('adm.logo-update');
 
     //redes
     Route::get('/admin/redes', [RedController::class,'index'])->name('adm.redes');
