@@ -2,9 +2,6 @@
     $redes = App\Models\Red::orderBy('orden')->get(); 
     $logos = App\Models\Logo::first(); 
 
-      $whatsapp = App\Models\Red::where('icono', 'fa-brands fa-whatsapp') // o 'nombre', si preferís
-                    ->where('active', 1)
-                    ->first();
 @endphp
 
 <!DOCTYPE html>
