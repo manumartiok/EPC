@@ -19,8 +19,8 @@
           <i class="fas fa-chevron-down transition-transform duration-300 group-[.open]:rotate-180"></i>
         </button>
         <ul class="submenu hidden pl-8 mt-1 space-y-1">
-          <li><a href="" class="block py-1 px-2 hover:bg-gray-600 rounded">Banner</a></li>
-          <li><a href="" class="block py-1 px-2 hover:bg-gray-600 rounded">Contenido</a></li>
+          {{-- <li><a href="{{route('adm.home-ban')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Banner</a></li>
+          <li><a href="{{route('adm.home')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Contenido</a></li> --}}
         </ul>
       </li>
       <li class="group">
@@ -29,8 +29,8 @@
           <i class="fas fa-chevron-down transition-transform duration-300 group-[.open]:rotate-180"></i>
         </button>
         <ul class="submenu hidden pl-8 mt-1 space-y-1">
-          <li><a href="" class="block py-1 px-2 hover:bg-gray-600 rounded">Banner</a></li>
-          <li><a href="" class="block py-1 px-2 hover:bg-gray-600 rounded">Contenido</a></li>
+          <li><a href="{{route('adm.nosotros-ban')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Banner</a></li>
+          <li><a href="{{ route('adm.nosotros') }}" class="block py-1 px-2 hover:bg-gray-600 rounded">Contenido</a></li>
         </ul>
       </li>
       <li class="group">
@@ -52,6 +52,16 @@
           <li><a href="" class="block py-1 px-2 hover:bg-gray-600 rounded">Banner</a></li>
           <li><a href="" class="block py-1 px-2 hover:bg-gray-600 rounded">Categorias</a></li>
           <li><a href="" class="block py-1 px-2 hover:bg-gray-600 rounded">Productos</a></li>
+        </ul>
+      </li>
+      <li class="group">
+        <button class="flex justify-between items-center w-full py-2 px-3 hover:bg-gray-700 rounded transition focus:outline-none" onclick="toggleSubMenu(this)">
+          <span><i class="fas fa-building mr-2"></i>Novedades</span>
+          <i class="fas fa-chevron-down transition-transform duration-300 group-[.open]:rotate-180"></i>
+        </button>
+        <ul class="submenu hidden pl-8 mt-1 space-y-1">
+          <li><a href="{{route('adm.novedade-ban')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Banner</a></li>
+          <li><a href="{{route('adm.novedade')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Contenido</a></li>
         </ul>
       </li>
       <li class="group">
