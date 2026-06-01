@@ -93,7 +93,6 @@
         <ul class="submenu hidden pl-8 mt-1 space-y-1">
           <li><a href="" class="block py-1 px-2 hover:bg-gray-600 rounded">Banner</a></li>
           <li><a href="" class="block py-1 px-2 hover:bg-gray-600 rounded">Contenido</a></li>
-          <li><a href="{{route('adm.redes')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Redes Sociales</a></li>
         </ul>
       </li>
       <li class="group">

@@ -91,16 +91,6 @@ Route::middleware(AdminAuth::class)->group(function () {
     Route::get('/admin/logo', [LogoController::class, 'show'])->name('adm.logo');
     Route::post('/admin/logo/update', [LogoController::class,'update'])->name('adm.logo-update');
 
-    //redes
-    Route::get('/admin/redes', [RedController::class,'index'])->name('adm.redes');
-    Route::get('/admin/redes/creador', [RedController::class,'create'])->name('adm.redes-creador');
-    Route::post('/admin/redes/store', [RedController::class,'store'])->name('adm.redes-store');
-    Route::get('/admin/redes/editor/{red_id}', [RedController::class,'show'])->name('adm.redes-editor');
-    Route::post('/admin/redes/update', [RedController::class,'update'])->name('adm.redes-update');
-    Route::get('/admin/redes/destroy/{red_id}', [RedController::class,'destroy'])->name('adm.redes-destroy');
-    Route::get('/admin/redes/switch/{red_id}', [RedController::class,'switch'])->name('adm.redes-switch');
-    Route::post('/admin/redes/reordenar', [RedController::class, 'reordenar'])->name('adm.redes-reordenar');
-
     //usuarios
     Route::get('/admin/usuarios', [UsuarioController::class,'index'])->name('adm.usuarios');
     Route::get('/admin/usuarios/creador', [UsuarioController::class,'create'])->name('adm.usuarios-creador');
