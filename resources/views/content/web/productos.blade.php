@@ -10,7 +10,7 @@
 
 @section('content')
 
-<div class="w-full h-[280px] bg-cover bg-center jakarta text-white "
+<div class="w-full h-[280px] bg-cover bg-center letra text-white "
      style="background-image: url('{{ $productos_ban->foto }}');">
     <div class="h-full max-w-[1366px] mx-auto px-[5%] md:px-[71px] pb-[70px] pt-[24px] flex flex-col justify-between">
         <h3 class="text-[12px]">
@@ -20,7 +20,7 @@
     </div>
 </div>
 
-<div class="h-auto jakarta mx-auto px-[5%] md:px-[71px] max-w-[1366px] pt-[40px] pb-[60px]">
+<div class="h-auto letra mx-auto px-[5%] md:px-[71px] max-w-[1366px] pt-[40px] pb-[60px]">
     <x-product-search :action="route('productos')" :marcas="$marcas" />
 
     @if($hayFiltros)

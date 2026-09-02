@@ -56,7 +56,7 @@
 
      <!-- navbar -->
         <nav class="relative top-0 left-0 w-full z-50 bg-white shadow-md">
-        <div id="navbar" class="nav-layout jakarta flex items-center  justify-between mx-auto px-[73px] max-w-[1366px] h-[100px] gap-[80px]">
+        <div id="navbar" class="nav-layout letra flex items-center  justify-between mx-auto px-[73px] max-w-[1366px] h-[100px] gap-[80px]">
             
             <!-- Logo -->
             <div class="h-[68px] w-[121px] flex-shrink-0">
@@ -126,7 +126,7 @@
     </div>
     
     <!-- footer  -->
-    <footer class=" jakarta text-white h-auto  flex flex-col justify-between bg-[#000000] ">
+    <footer class=" letra text-white h-auto  flex flex-col justify-between bg-[#000000] ">
 
         <div class="h-full w-full max-w-[1366px] mx-auto px-[73px] pt-[85px] pb-[50px] flex flex-col lg:flex-row justify-center lg:justify-between items-center lg:items-start">
             <div class="">

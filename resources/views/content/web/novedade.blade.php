@@ -12,7 +12,7 @@
 @section('content')
 
 {{-- banner  --}}
-<div class="w-full h-[300px] bg-cover bg-center roboto text-white pt-[120px] pb-[70px]"
+<div class="w-full h-[300px] bg-cover bg-center letra text-white pt-[120px] pb-[70px]"
      style="background-image: url('{{ $novedades_ban->foto }}');">
     <div class="h-full max-w-[1366px] mx-auto px-[5%] md:px-[71px] flex flex-col justify-between">
         <h3 class="text-[12px]">
@@ -23,7 +23,7 @@
 </div>
 
 {{-- contenido --}}
-<div class="h-auto roboto mx-auto px-[5%] md:px-[71px] max-w-[1366px] pt-[80px] pb-[110px]">
+<div class="h-auto letra mx-auto px-[5%] md:px-[71px] max-w-[1366px] pt-[80px] pb-[110px]">
     <div class="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[24px]">
 
         @foreach($novedades as $item)

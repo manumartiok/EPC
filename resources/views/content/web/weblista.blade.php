@@ -8,7 +8,7 @@
 
 @section('content') 
 {{-- contenido  --}}
-<div class="pt-[10px]  pb-[180px] h-full jakarta max-w-[1366px] mx-auto px-[5%] md:px-[71px]">
+<div class="pt-[10px]  pb-[180px] h-full letra max-w-[1366px] mx-auto px-[5%] md:px-[71px]">
     {{-- bread  --}}
     <div class="text-[12px] text-[#74716A]">
         <h3><a href="{{route('home')}}" class="font-bold">Inicio</a> > Lista de precios</h3>

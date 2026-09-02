@@ -29,7 +29,7 @@
         color: white !important;
     }
 </style>
-<div class="jakarta">
+<div class="letra">
     {{-- CARRUSEL BANNER --}}
     <div id="bannerCarousel" class="relative w-full h-[776px] overflow-hidden z-10">
 

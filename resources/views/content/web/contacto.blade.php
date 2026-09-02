@@ -10,7 +10,7 @@
 @section('content')
 
 {{-- banner --}}
-<div class="w-full h-[300px] bg-cover bg-center roboto text-white pt-[120px] pb-[70px]"
+<div class="w-full h-[300px] bg-cover bg-center letra text-white pt-[120px] pb-[70px]"
      style="background-image: url('{{ $contacto_ban->foto }}');">
     <div class="h-full max-w-[1366px] mx-auto px-[5%] md:px-[71px] flex flex-col justify-between">
         <h3 class="text-[12px]">
@@ -21,7 +21,7 @@
 </div>
 
 {{-- contenido --}}
-<div class=" roboto max-w-[1366px] mx-auto px-[5%] md:px-[71px] flex flex-col">
+<div class=" letra max-w-[1366px] mx-auto px-[5%] md:px-[71px] flex flex-col">
 
     {{-- formulario y redes --}}
     <div class="flex flex-col md:flex-row w-full gap-[40px] my-[80px]">

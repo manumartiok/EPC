@@ -32,7 +32,7 @@
     </div>
 </div>
 
-<div class="h-auto font-sans mx-auto px-[5%] md:px-[71px] max-w-[1366px] pt-6 pb-[80px]">
+<div class="h-auto letra mx-auto px-[5%] md:px-[71px] max-w-[1366px] pt-6 pb-[80px]">
     <div class="w-full flex flex-col lg:flex-row gap-[50px] items-start">
 
         {{-- Galería y foto principal (Invertido el orden para que las miniaturas queden a la izquierda en desktop) --}}

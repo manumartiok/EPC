@@ -22,7 +22,7 @@
     $descuentoFormaPago = 5;
     $productosCarrito = $productosCarrito ?? [];
 @endphp
-<div class="pt-[10px] pb-[180px] h-full jakarta max-w-[1366px] mx-auto px-[5%] md:px-[71px]">
+<div class="pt-[10px] pb-[180px] h-full letra max-w-[1366px] mx-auto px-[5%] md:px-[71px]">
 
     <!-- Breadcrumb -->
     <h3 class="text-[12px] mb-[40px] pt-[26px] text-[#3A3A3A]">

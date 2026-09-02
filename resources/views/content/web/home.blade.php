@@ -13,7 +13,7 @@
 @section('title', 'Inicio')
 @section('content')
 
-<div class="roboto">
+<div class="letra">
     {{-- CARRUSEL BANNER --}}
     {{-- <div id="bannerCarousel" class="relative w-full h-[768px] overflow-hidden z-10">
 

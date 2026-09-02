@@ -12,7 +12,7 @@
     
 {{-- banner  --}}
 
-<div class="w-full h-[300px] bg-cover bg-center roboto text-white pt-[120px] pb-[70px]" style="background-image: url('{{ $nosotros_ban->foto }}');">
+<div class="w-full h-[300px] bg-cover bg-center letra text-white pt-[120px] pb-[70px]" style="background-image: url('{{ $nosotros_ban->foto }}');">
     <div class="h-full max-w-[1366px] mx-auto px-[5%] md:px-[71px] flex flex-col justify-between">
         <h3 class="text-[12px]"><a class="font-bold" href="{{ route('home') }}" >Inicio</a> > Nosotros</h3>
         <h1 class="text-[32px] font-medium">{{$nosotros_ban->texto}}</h1>
@@ -22,7 +22,7 @@
 {{-- contenido  --}}
 <div>
     {{-- nosotros  --}}
-    <div class="h-full roboto max-w-[1366px] mx-auto px-[5%] md:px-[71px] pt-[65px] pb-[85px] flex flex-col justify-center">
+    <div class="h-full letra max-w-[1366px] mx-auto px-[5%] md:px-[71px] pt-[65px] pb-[85px] flex flex-col justify-center">
         <div class="flex flex-col lg:flex-row w-full gap-[45px] text-center lg:text-start">
             {{-- Foto  --}}
             <div class=" w-full lg:min-w-[600px] lg:w-1/2 flex flex-grow ">
@@ -37,7 +37,7 @@
     </div>
     {{-- valores  --}}
     <div class="h-full w-full bg-[#F5F5F5]">
-        <div class="roboto max-w-[1366px] mx-auto px-[5%] md:px-[71px] pt-[40px] pb-[75px] flex flex-col">
+        <div class="letra max-w-[1366px] mx-auto px-[5%] md:px-[71px] pt-[40px] pb-[75px] flex flex-col">
             {{-- encabezado  --}}
             <div class="flex flex-col text-center lg:text-start">
                 <h2 class="text-[32px] font-medium  mb-[24px]">{{$nosotros->texto2}}</h2>
