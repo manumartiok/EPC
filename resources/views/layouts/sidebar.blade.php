@@ -81,7 +81,9 @@
         <ul class="submenu hidden pl-8 mt-1 space-y-1">
          <li><a href="{{route('adm.web-usuarios')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Usuarios</a></li>
           {{-- <li><a href="{{route('adm.carrito')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Carrito</a></li> --}}
-          <li><a href="{{route('adm.lista')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Lista de precios</a></li>
+          <li><a href="{{route('adm.info')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Info. de pagos</a></li>
+         <li><a href="{{route('adm.lista')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Lista de precios</a></li>
+         <li><a href="{{route('adm.pedidos-historico')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Histórico de pedidos</a></li>
         </ul>
       </li>
     </ul>

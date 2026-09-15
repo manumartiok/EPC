@@ -22,6 +22,8 @@ use App\Http\Controllers\ContactoBannerController;
 use App\Http\Controllers\WebUsuarioController;
 use App\Http\Controllers\ListaController;
 use App\Http\Controllers\PedidoController;
+use App\Http\Controllers\InfoController;
+use App\Http\Controllers\InfoPagoController;
 use App\Models\Marca;
 use App\Models\Producto;
 use App\Models\ProductoBan;
@@ -134,6 +136,10 @@ Route::middleware(AdminAuth::class)->group(function () {
     Route::get('/admin/lista/switch/{lista_id}', [ListaController::class, 'switch'])->name('adm.lista-switch');
     Route::post('/admin/lista/reordenar', [ListaController::class, 'reordenar'])->name('adm.lista-reordenar');
 
+    // Info
+    Route::get('/admin/info', [InfoController::class, 'show'])->name('adm.info');
+    Route::post('/admin/info/update', [InfoController::class, 'update'])->name('adm.info-update');
+
     //newsletter
     Route::get('/admin/newsletter', [NewsletterController::class,'index'])->name('adm.newsletter');
     
@@ -154,6 +160,13 @@ Route::middleware(AdminAuth::class)->group(function () {
     Route::post('/admin/usuarios/update', [UsuarioController::class,'update'])->name('adm.usuarios-update');
     Route::get('/admin/usuarios/destroy/{usuario_id}', [UsuarioController::class,'destroy'])->name('adm.usuarios-destroy');
     Route::get('/admin/usuarios/switch/{usuario_id}', [UsuarioController::class,'switch'])->name('adm.usuarios-switch');
+
+    //historico
+    Route::get('/admin/pedidos', [PedidoController::class, 'adminIndex'])->name('adm.pedidos-historico');
+    Route::get('/admin/pedidos/editor/{pedido}', [PedidoController::class, 'adminShow'])->name('adm.pedidos-historico-editor');
+    Route::post('/admin/pedidos/update', [PedidoController::class, 'adminUpdate'])->name('adm.pedidos-historico-update');
+    Route::get('/admin/pedidos/destroy/{pedido}', [PedidoController::class, 'adminDestroy'])->name('adm.pedidos-historico-destroy');
+    Route::get('/admin/pedidos/switch/{pedido}', [PedidoController::class, 'adminSwitch'])->name('adm.pedidos-historico-switch');
 
     //metadatos
     Route::get('/admin/metadatos', [MetadatoController::class,'index'])->name('adm.metadatos');
@@ -191,6 +204,16 @@ Route::middleware('web.usuario.auth')->group(function () {
     Route::post('/web/carrito/eliminar', [PedidoController::class, 'eliminar'])->name('web-carrito.eliminar');
     Route::post('/web/carrito/vaciar', [PedidoController::class, 'vaciar'])->name('web-carrito.vaciar');
     Route::post('/web/carrito/completar', [PedidoController::class, 'completar'])->name('web-carrito.completar');
+
+    Route::get('/clientes/informacion-pago', function () {
+        return view('content.web.webinfo');})->name('web-info');
+
+    Route::post('/info-pago/enviar', [InfoPagoController::class, 'enviar'])
+        ->name('info-pago.enviar');
+
+    Route::get('/clientes/pedidos', [PedidoController::class, 'historico'])->name('web-pedidos');
+    Route::get('/clientes/pedidos/{pedido}/pdf', [PedidoController::class, 'pdf'])->name('web-pedidos.pdf');
+    Route::post('/clientes/pedidos/{pedido}/recomprar', [PedidoController::class, 'recomprar'])->name('web-pedidos.recomprar');
 
     Route::get('/clientes/lista', function () {
         return view('content.web.weblista');

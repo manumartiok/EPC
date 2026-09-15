@@ -11,7 +11,7 @@ class NovedadeBannerController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function show($novedade_banners_id = null)
+    public function show()
     {
         $novedade_banner = NovedadeBanner::first() ?? new NovedadeBanner();
 

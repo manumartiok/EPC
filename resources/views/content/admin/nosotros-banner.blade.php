@@ -20,14 +20,14 @@
             
             <form method="POST" action="{{ route('adm.nosotros-ban-update') }}" enctype="multipart/form-data">
                 @csrf
-                <input type="hidden" name="nosotros_banners_id" value="{{ $nosotro_banners->id ?? '' }}">
+                <input type="hidden" name="bn_id" value="{{ $bn->id ?? '' }}">
 
                 <div>
                     <div class="mb-4">
                     <label class="block text-gray-700 font-medium mb-2" for="foto">Foto (recomendado 1366x300) / (2MB tamaño máximo)</label>
 
-                    @if (!empty($nosotro_banners->foto))
-                        <img :src="foto.foto || '{{ $nosotro_banners->foto }}'" alt="Foto"  class="mb-3 w-full max-w-[1366px] h-[300px] object-cover">
+                    @if (!empty($bn->foto))
+                        <img :src="foto.foto || '{{ $bn->foto }}'" alt="Foto"  class="mb-3 w-full max-w-[1366px] h-[300px] object-cover">
                     @endif
 
                     <input type="file" name="foto" id="foto" @change="subirFoto"
@@ -36,7 +36,7 @@
 
                     <div class="mb-4">
                         <label class="block text-gray-700 font-medium mb-2" for="texto">Título</label>
-                        <input type="text" id="texto" name="texto" placeholder="Título" value="{{ $nosotro_banners->texto ?? '' }}"
+                        <input type="text" id="texto" name="texto" placeholder="Título" value="{{ $bn->texto ?? '' }}"
                             class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
                 </div>

@@ -11,10 +11,10 @@ class NosotroBannerController extends Controller
     /**
      * Display a listing of the resource.
      */
-   public function show($nosotros_banners_id = null)
+   public function show()
     {
-        $nosotros_banners = NosotroBanner::first() ?? new NosotroBanner();
-        return view('content.admin.nosotros-banner', ['nosotro_banners' => $nosotros_banners]);
+        $bn = NosotroBanner::first() ?? new NosotroBanner();
+        return view('content.admin.nosotros-banner', ['bn' => $bn]);
     }
 
     /**
@@ -26,12 +26,12 @@ class NosotroBannerController extends Controller
             'foto' => 'nullable|image|max:2048', // 2 MB = 2048 KB
         ]);
 
-        $nosotros_banners = NosotroBanner::find($request->nosotros_banners_id) ?? new NosotroBanner();
+        $bn = NosotroBanner::find($request->bn_id) ?? new NosotroBanner();
 
         // Manejo de la imagen
         if ($request->hasFile('foto')) {
-            if (!empty($nosotros_banners->foto)) {
-                $oldPath = str_replace('/storage/', '', $nosotros_banners->foto);
+            if (!empty($bn->foto)) {
+                $oldPath = str_replace('/storage/', '', $bn->foto);
                 if (Storage::disk('public')->exists($oldPath)) {
                     Storage::disk('public')->delete($oldPath);
                 }
@@ -40,13 +40,13 @@ class NosotroBannerController extends Controller
             $file = $request->file('foto');
             $name = time() . '.' . $file->getClientOriginalName();
             $path = $file->storeAs('images', $name, 'public');
-            $nosotros_banners->foto = Storage::url($path);
+            $bn->foto = Storage::url($path);
         }
 
-        $nosotros_banners->texto = $request->texto;
-        $nosotros_banners->save();
+        $bn->texto = $request->texto;
+        $bn->save();
 
-        return redirect()->route('adm.nosotros-ban', ['nosotro_banners_id' => $nosotros_banners->id])
+        return redirect()->route('adm.nosotros-ban', ['bn_id' => $bn->id])
             ->with('success', 'Banner de nosotros actualizado correctamente.');
     }
 }

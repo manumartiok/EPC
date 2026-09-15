@@ -75,6 +75,8 @@
             <div class="flex-1 flex justify-end  font-[400] text-[16px] gap-4 mr-4">
                 <a href="{{route('web-productos')}}" class="{{ Request::is('clientes/productos') ? 'font-bold' : '' }}">Productos</a>
                 <a href="{{route('web-carrito')}}" class="{{ Request::is('clientes/carrito') ? 'font-bold' : '' }}">Carrito</a>
+                <a href="{{route('web-info')}}" class="{{ Request::is('clientes/informacion-pago') ? 'font-bold' : '' }}">Info Pago</a>
+                <a href="{{route('web-pedidos')}}" class="{{ Request::is('clientes/pedidos') ? 'font-bold' : '' }}">Mis pedidos</a>
                 <a href="{{route('web-lista')}}" class="{{ Request::is('clientes/lista') ? 'font-bold' : '' }}">Lista de precios</a>
             </div>
             @auth('web_usuario')
@@ -97,6 +99,8 @@
             <div class="flex flex-col items-center gap-4 bg-white py-6 shadow-md z-40">
                 <a href="{{route('web-productos')}}" class=" text-[16px] font-semibold hover:text-[#5FBB46]">Productos</a>
                 <a href="{{route('web-carrito')}}" class=" text-[16px] font-semibold hover:text-[#5FBB46]">Carrito</a>
+                <a href="{{ route('web-info') }}" class="text-[16px] font-semibold uppercase ">Info de pagos</a>
+                <a href="{{ route('web-pedidos') }}" class="text-[16px] font-semibold uppercase ">Mis pedidos</a>
                 <a href="{{route('web-lista')}}" class=" text-[16px] font-semibold hover:text-[#5FBB46]">Lista de precios</a>
 
                  <!-- Botón de usuario para mobile -->
