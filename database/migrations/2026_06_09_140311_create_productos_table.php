@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('orden')->nullable();
             $table->string('nombre')->nullable();
             $table->string('codigo')->nullable();
-            $table->string('precio')->nullable();
+            $table->decimal('precio', 10, 2)->nullable();
             $table->string('foto')->nullable();
             $table->string('archivo')->nullable();
             $table->boolean('active')->default(true);
