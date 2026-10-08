@@ -1,6 +1,21 @@
 @php
-    $contacto_ban = App\Models\ContactoBanner::first();
     $contacto_contenido = App\Models\Contacto::first();
+    $productos_lista = App\Models\Producto::where('active', true)->orderBy('nombre')->get(['id', 'nombre', 'foto']);
+    $secciones_lista = App\Models\Marca::where('active', true)->orderBy('nombre')->get(['id', 'nombre']);
+    $motivos = App\Models\Consulta::where('active', true)->orderBy('orden')->pluck('nombre');
+
+    // Si se llega desde "Consultar" de un producto, el mensaje viene armado con su nombre
+    $producto_consulta = request()->filled('producto')
+        ? App\Models\Producto::where('active', true)->find(request('producto'))
+        : null;
+    $mensaje_inicial = $producto_consulta
+        ? 'Hola, quisiera consultar por el producto "' . $producto_consulta->nombre . '". Quedo a la espera de su respuesta. ¡Gracias!'
+        : '';
+
+    $inputClass = 'w-full h-[40px] bg-white border border-[#DEDFE0] px-[16px] text-[14px] text-[#303030] placeholder:text-[#303030]/50 focus:outline-none focus:border-[#086AFF]';
+    $selectClass = $inputClass . ' appearance-none pr-[40px] bg-no-repeat bg-[right_12px_center]';
+    $labelClass = 'text-[16px] leading-[1.5] text-[#303030]';
+    $chevron = "background-image:url('" . asset('assets/img/contacto/chevron-down.svg') . "')";
 @endphp
 
 @extends('layouts.web')
@@ -9,188 +24,235 @@
 
 @section('content')
 
-{{-- banner --}}
-<div class="w-full h-[300px] bg-cover bg-center letra text-white pt-[120px] pb-[70px]"
-     style="background-image: url('{{ $contacto_ban->foto }}');">
-    <div class="h-full max-w-[1366px] mx-auto px-[5%] md:px-[71px] flex flex-col justify-between">
-        <h3 class="text-[12px]">
-            <a class="font-bold" href="{{ route('home') }}">Inicio</a> > Contacto
-        </h3>
-        <h1 class="text-[32px] font-medium">{{ $contacto_ban->texto }}</h1>
+<div class="letra bg-[#F2F5F8] text-[#303030]">
+<div class="max-w-[1366px] mx-auto px-[5%] lg:px-[71px] pt-[24px] pb-[80px]">
+
+    {{-- breadcrumb --}}
+    <p class="text-[12px] leading-[1.5]"><a href="{{ url('/') }}" class="font-bold">Inicio</a> &gt;&nbsp; Contacto</p>
+
+    {{-- encabezado --}}
+    <div class="mt-[70px]">
+        <p class="text-[16px] leading-[1.5] text-[#086AFF]">CONTACTO</p>
+        <h1 class="mt-[1px] text-[32px] lg:text-[40px] leading-[1.2] font-bold text-[#003879]">¿En qué te podemos ayudar?</h1>
+        <p class="mt-[12px] text-[16px] leading-[1.5]">Elegí el canal que mejor se ajuste a tu consulta, o escribinos directamente por el formulario.</p>
     </div>
+
+    {{-- canales --}}
+    <div class="mt-[34px] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[24px]">
+        @if($contacto_contenido?->direccion)
+        <a href="https://maps.google.com/?q={{ urlencode($contacto_contenido->direccion) }}" target="_blank" rel="noopener noreferrer" class="bg-white min-h-[180px] p-[24px] flex flex-col justify-start gap-[36px]">
+            <img src="{{ asset('assets/img/contacto/map-pin.svg') }}" alt="" class="w-[34px] h-[34px]">
+            <span class="text-[16px] leading-[1.5]">{{ $contacto_contenido->direccion }}</span>
+        </a>
+        @endif
+
+        @if($contacto_contenido?->mail)
+        <a href="mailto:{{ $contacto_contenido->mail }}" class="bg-white min-h-[180px] p-[24px] flex flex-col justify-start gap-[36px]">
+            <img src="{{ asset('assets/img/contacto/mail.svg') }}" alt="" class="w-[34px] h-[34px]">
+            <span class="text-[16px] leading-[1.5] break-all">{{ $contacto_contenido->mail }}</span>
+        </a>
+        @endif
+
+        @if($contacto_contenido?->telefono)
+        <a href="tel:{{ preg_replace('/[^\d+]/', '', $contacto_contenido->telefono) }}" class="bg-white min-h-[180px] p-[24px] flex flex-col justify-start gap-[36px]">
+            <img src="{{ asset('assets/img/contacto/phone.svg') }}" alt="" class="w-[34px] h-[34px]">
+            <span class="text-[16px] leading-[1.5]">{{ $contacto_contenido->telefono }}</span>
+        </a>
+        @endif
+
+        @if($contacto_contenido?->whatssap)
+        <a href="https://wa.me/{{ preg_replace('/\D+/', '', $contacto_contenido->whatssap) }}" target="_blank" rel="noopener noreferrer" class="bg-white min-h-[180px] p-[24px] flex flex-col justify-start gap-[36px]">
+            <img src="{{ asset('assets/img/contacto/whatsapp.svg') }}" alt="" class="w-[30px] h-[30px]">
+            <span class="text-[16px] leading-[1.5]">{{ $contacto_contenido->whatssap }}</span>
+        </a>
+        @endif
+    </div>
+
+    <form id="formContacto" action="{{ route('form.contacto') }}" method="POST">
+        @csrf
+        <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response">
+
+        {{-- productos --}}
+        <div id="productosWrap" class="mt-[24px] flex flex-col gap-[2px]"></div>
+        <button type="button" id="agregarProducto" class="mt-[16px] text-[16px] leading-[1.5] font-bold text-[#003879]">+Agregar más productos</button>
+
+        {{-- mapa + formulario --}}
+        <div class="mt-[32px] grid grid-cols-1 lg:grid-cols-2 gap-0">
+            <div class="min-h-[400px] lg:min-h-0 bg-white">
+                <div id="mapaContacto" class="relative z-0 w-full h-full min-h-[400px]"></div>
+            </div>
+
+            <div class="bg-white p-[24px] flex flex-col gap-[20px]">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-[24px] gap-y-[20px]">
+                    <div class="flex flex-col gap-[4px]">
+                        <label for="nombre" class="{{ $labelClass }}">Nombre*</label>
+                        <input type="text" id="nombre" name="nombre" placeholder="Juan" required class="{{ $inputClass }}">
+                    </div>
+                    <div class="flex flex-col gap-[4px]">
+                        <label for="apellido" class="{{ $labelClass }}">Apellido*</label>
+                        <input type="text" id="apellido" name="apellido" placeholder="Perez" required class="{{ $inputClass }}">
+                    </div>
+                    <div class="flex flex-col gap-[4px]">
+                        <label for="telefono" class="{{ $labelClass }}">Teléfono*</label>
+                        <input type="tel" id="telefono" name="telefono" inputmode="numeric" placeholder="Código de área + 12345678" required class="{{ $inputClass }}">
+                    </div>
+                    <div class="flex flex-col gap-[4px]">
+                        <label for="email" class="{{ $labelClass }}">Email*</label>
+                        <input type="email" id="email" name="email" placeholder="juanperez@mail.com" required class="{{ $inputClass }}">
+                    </div>
+                    <div class="flex flex-col gap-[4px]">
+                        <label for="razon_social" class="{{ $labelClass }}">Razón social*</label>
+                        <input type="text" id="razon_social" name="razon_social" placeholder="-" required class="{{ $inputClass }}">
+                    </div>
+                    <div class="flex flex-col gap-[4px]">
+                        <label for="cuit" class="{{ $labelClass }}">CUIT-CUIL*</label>
+                        <input type="text" id="cuit" name="cuit" inputmode="numeric" placeholder="2712345678" required class="{{ $inputClass }}">
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-[4px]">
+                    <label for="motivo" class="{{ $labelClass }}">Motivo de la consulta</label>
+                    <select id="motivo" name="motivo" class="{{ $selectClass }}" style="{{ $chevron }}">
+                        <option value="">Seleccionar motivo</option>
+                        @foreach($motivos as $motivo)
+                            <option value="{{ $motivo }}">{{ $motivo }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="flex flex-col gap-[4px]">
+                    <label for="mensaje" class="{{ $labelClass }}">Comentario</label>
+                    <textarea id="mensaje" name="mensaje" rows="6" placeholder="Dejanos un comentario" required
+                        class="w-full h-[160px] bg-white border border-[#DEDFE0] px-[16px] py-[12px] text-[14px] text-[#303030] placeholder:text-[#303030]/50 focus:outline-none focus:border-[#086AFF] resize-none">{{ $mensaje_inicial }}</textarea>
+                </div>
+
+                <div class="mt-[8px] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-[16px]">
+                    <p class="text-[16px] leading-[1.5]">*Campos obligatorios</p>
+                    <button type="submit" class="w-full sm:w-[288px] bg-[#086AFF] text-white text-[16px] leading-[1.5] p-[10px]">ENVIAR</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
 </div>
 
-{{-- contenido --}}
-<div class=" letra max-w-[1366px] mx-auto px-[5%] md:px-[71px] flex flex-col">
+{{-- plantilla de fila de producto --}}
+<template id="productoRowTpl">
+    <div class="producto-row bg-white min-h-[108px] flex flex-col lg:flex-row lg:items-center gap-[16px] lg:gap-[40px] pr-[16px] lg:pr-[24px]">
+        <div class="w-full lg:w-[104px] h-[108px] bg-[#F2F5F8] shrink-0 overflow-hidden">
+            <img src="" alt="" class="producto-foto w-full h-full object-cover hidden">
+        </div>
 
-    {{-- formulario y redes --}}
-    <div class="flex flex-col md:flex-row w-full gap-[40px] my-[80px]">
-        {{-- redes --}}
-        <div class="flex flex-col items-center md:items-start w-full md:w-1/3 gap-[10px] ">
-           {{-- Redes Sociales --}}
-            <div class="h-full flex flex-col items-center md:items-start">
+        <div class="flex flex-col gap-[4px] w-full lg:w-[352px]">
+            <label class="{{ $labelClass }}">Producto</label>
+            <select data-field="producto_id" class="producto-select {{ $selectClass }} border-[#EDE9E2]" style="{{ $chevron }}">
+                <option value="">Seleccionar producto</option>
+                @foreach($productos_lista as $p)
+                    <option value="{{ $p->id }}" data-foto="{{ $p->foto }}">{{ $p->nombre }}</option>
+                @endforeach
+            </select>
+        </div>
 
-                {{-- Dirección --}}
-                @if($contacto_contenido->direccion)
-                    <a href="https://maps.google.com/?q={{ urlencode($contacto_contenido->direccion) }}" target="_blank"
-                    class="flex items-start gap-3 mb-[10px]">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                        <path d="M20 10C20 16 12 22 12 22C12 22 4 16 4 10C4 7.87827 4.84285 5.84344 6.34315 4.34315C7.84344 2.84285 9.87827 2 12 2C14.1217 2 16.1566 2.84285 17.6569 4.34315C19.1571 5.84344 20 7.87827 20 10Z" stroke="#FF9000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M12 13C13.6569 13 15 11.6569 15 10C15 8.34315 13.6569 7 12 7C10.3431 7 9 8.34315 9 10C9 11.6569 10.3431 13 12 13Z" stroke="#FF9000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                        <span class="max-w-[300px]">{{ $contacto_contenido->direccion }}</span>
-                    </a>
-                @endif
+        <div class="flex flex-col gap-[4px] w-full lg:w-[352px]">
+            <label class="{{ $labelClass }}">Sección</label>
+            <select data-field="seccion_id" class="{{ $selectClass }} border-[#EDE9E2]" style="{{ $chevron }}">
+                <option value="">Seleccionar sección</option>
+                @foreach($secciones_lista as $s)
+                    <option value="{{ $s->id }}">{{ $s->nombre }}</option>
+                @endforeach
+            </select>
+        </div>
 
-                {{-- Teléfono 1 --}}
-                @if ($contacto_contenido->telefono)
-                <h3 class="flex items-center gap-3 whitespace-nowrap mb-[10px]">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                    <path d="M21.9999 16.92V19.92C22.0011 20.1985 21.944 20.4742 21.8324 20.7293C21.7209 20.9845 21.5572 21.2136 21.352 21.4019C21.1468 21.5901 20.9045 21.7335 20.6407 21.8227C20.3769 21.9119 20.0973 21.9451 19.8199 21.92C16.7428 21.5856 13.7869 20.5341 11.1899 18.85C8.77376 17.3147 6.72527 15.2662 5.18993 12.85C3.49991 10.2412 2.44818 7.271 2.11993 4.18C2.09494 3.90347 2.12781 3.62476 2.21643 3.36163C2.30506 3.09849 2.4475 2.85669 2.6347 2.65162C2.82189 2.44655 3.04974 2.28271 3.30372 2.17052C3.55771 2.05834 3.83227 2.00026 4.10993 2H7.10993C7.59524 1.99523 8.06572 2.16708 8.43369 2.48353C8.80166 2.79999 9.04201 3.23945 9.10993 3.72C9.23656 4.68007 9.47138 5.62273 9.80993 6.53C9.94448 6.88793 9.9736 7.27692 9.89384 7.65088C9.81408 8.02485 9.6288 8.36811 9.35993 8.64L8.08993 9.91C9.51349 12.4135 11.5864 14.4864 14.0899 15.91L15.3599 14.64C15.6318 14.3711 15.9751 14.1859 16.3491 14.1061C16.723 14.0263 17.112 14.0555 17.4699 14.19C18.3772 14.5286 19.3199 14.7634 20.2799 14.89C20.7657 14.9585 21.2093 15.2032 21.5265 15.5775C21.8436 15.9518 22.0121 16.4296 21.9999 16.92Z" stroke="#FF9000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    <div class="">
-                    <span>{{ $contacto_contenido->telefono }}</span> | <span>{{ $contacto_contenido->telefono2 }}</span>
-                    </div>
-                </h3>
-                @endif
-                
-                {{-- Mail --}}
-                @if ($contacto_contenido->mail)
-                    <div
-                    class="flex  gap-3 whitespace-nowrap mb-[10px]">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                        <path d="M20 4H4C2.89543 4 2 4.89543 2 6V18C2 19.1046 2.89543 20 4 20H20C21.1046 20 22 19.1046 22 18V6C22 4.89543 21.1046 4 20 4Z" stroke="#FF9000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M22 7L13.03 12.7C12.7213 12.8934 12.3643 12.996 12 12.996C11.6357 12.996 11.2787 12.8934 10.97 12.7L2 7" stroke="#FF9000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                        <div class="flex flex-col">
-                        <a href="mailto:{{ $contacto_contenido->mail }}">{{ $contacto_contenido->mail }}</a>
-                        <a href="mailto:{{ $contacto_contenido->mail2 }}">{{ $contacto_contenido->mail2 }}</a>
-                        <a href="mailto:{{ $contacto_contenido->mail3 }}">{{ $contacto_contenido->mail3 }}</a>
-                        </div>
-                    </div>
-                @endif
-
-                {{-- WhatsApp --}}
-                @if ($contacto_contenido->whatssap)
-                    <a href="https://wa.me/{{ preg_replace('/\D+/', '', $contacto_contenido->whatssap) }}" target="_blank"
-                    class="flex items-center gap-2 whitespace-nowrap mb-[10px]">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                            <path d="M17.0076 2.90097C13.1316 -0.970609 6.85625 -0.965179 2.9857 2.9064C-0.179142 6.07751 -0.830567 10.9808 1.40599 14.8632L0 20L5.25483 18.6154C6.70968 19.4081 8.33824 19.8208 9.99394 19.8208C15.4333 19.9077 19.9119 15.5691 19.9987 10.1283C20.0422 7.40786 18.9565 4.79061 17.0076 2.90097ZM9.99937 18.1538C8.52281 18.1538 7.07339 17.7574 5.80311 17.0081L5.50454 16.8289L2.38856 17.6488L3.21912 14.608L3.0237 14.2931C0.656853 10.3944 1.89999 5.31732 5.79225 2.94984C9.68995 0.582368 14.7656 1.82583 17.1325 5.71913C17.8979 6.98432 18.3159 8.4287 18.3322 9.91109C18.2833 14.4777 14.5702 18.1538 9.99937 18.1538ZM14.5159 11.9799C14.2716 11.855 13.0502 11.2577 12.8222 11.1763C12.5942 11.0948 12.4314 11.0514 12.2631 11.3012C12.0948 11.5509 11.6225 12.1048 11.4759 12.2731C11.3294 12.4415 11.1882 12.4632 10.9385 12.3383C9.48366 11.6107 8.52824 11.0405 7.56739 9.38981C7.31224 8.94998 7.82253 8.98256 8.29481 8.03774C8.35995 7.89656 8.35452 7.73366 8.2731 7.60334C8.21338 7.47845 7.71396 6.2567 7.50767 5.76258C7.30682 5.27931 7.10053 5.3499 6.94853 5.33904C6.80739 5.32818 6.6391 5.32818 6.47625 5.32818C6.22111 5.33361 5.98225 5.44763 5.81397 5.63768C5.2494 6.17525 4.93454 6.92459 4.9454 7.70651C5.02683 8.64047 5.37968 9.53099 5.95511 10.2695C6.07997 10.4324 7.7031 12.9356 10.1894 14.0107C11.7636 14.6895 12.3771 14.7492 13.1642 14.6297C13.6419 14.5592 14.6299 14.0324 14.8362 13.4514C14.9991 13.0822 15.0479 12.6695 14.9773 12.2731C14.9176 12.1645 14.7548 12.0994 14.5105 11.9799H14.5159Z" fill="#29176D"/>
-                        </svg>
-                        <span>{{ $contacto_contenido->whatssap }}</span>
-                    </a>
-                @endif
-
+        <div class="flex flex-col gap-[4px]">
+            <label class="{{ $labelClass }}">Cantidad</label>
+            <div class="flex items-center justify-between w-[108px] h-[40px] bg-white border border-[#EDE9E2] px-[11px]">
+                <button type="button" class="cant-menos" aria-label="Menos"><img src="{{ asset('assets/img/contacto/minus.svg') }}" alt="" class="w-[16px] h-[16px]"></button>
+                <input type="number" data-field="cantidad" value="0" min="0" class="cant-input w-[40px] text-center text-[20px] leading-[1.5] text-[#303030]/50 bg-transparent focus:outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none">
+                <button type="button" class="cant-mas" aria-label="Más"><img src="{{ asset('assets/img/contacto/plus.svg') }}" alt="" class="w-[16px] h-[16px]"></button>
             </div>
         </div>
 
-        {{-- formulario --}}
-        <div class="w-full md:w-2/3">
-            <form id="formContacto" action="{{ route('form.contacto') }}" method="POST" enctype="multipart/form-data" class="w-full flex flex-col gap-[20px]">
-            @csrf
-            
-            <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response">
-            
-            <!-- Fila 1 -->
-            <div class="flex flex-col md:flex-row gap-6">
-                <div class="w-full md:w-1/2 flex flex-col gap-2">
-                    <label for="nombre" class="text-[16px] font-normal text-[#000]">Nombre y Apellido*</label>
-                    <input type="text" id="nombre" name="nombre" class="h-[45px] border border-[#DCDCDC] rounded-[4px] px-4 focus:outline-none" required>
-                </div>
-                <div class="w-full md:w-1/2 flex flex-col gap-2">
-                    <label for="email" class="text-[16px] font-normal text-[#000]">Email*</label>
-                    <input type="email" id="email" name="email" class="h-[45px] border border-[#DCDCDC] rounded-[4px] px-4 focus:outline-none" required>
-                </div>
-            </div>
-
-            <!-- Fila 2 -->
-            <div class="flex flex-col md:flex-row gap-6">
-                <div class="w-full md:w-1/2 flex flex-col gap-2">
-                    <label for="celular" class="text-[16px] font-normal text-[#000]">Celular*</label>
-                    <input type="tel" id="celular" name="celular" 
-                        pattern="[0-9]*" 
-                        inputmode="numeric"
-                        class="h-[45px] border border-[#DCDCDC] rounded-[4px] px-4 focus:outline-none" required>
-                </div>
-                <div class="w-full md:w-1/2 flex flex-col gap-2">
-                    <label for="empresa" class="text-[16px] font-normal text-[#000]">Empresa</label>
-                    <input type="empresa" id="empresa" name="empresa" class="h-[45px] border border-[#DCDCDC] rounded-[4px] px-4 focus:outline-none">
-                </div>
-            </div>
-
-            <!-- Fila 3 (Mensaje y datos obligatorios) -->
-            <div class="flex flex-col md:flex-row gap-6">
-                <div class="w-full md:w-1/2 flex flex-col gap-2">
-                    <label for="mensaje" class="text-[16px] font-normal text-[#000]">Mensaje</label>
-                    <textarea id="mensaje" name="mensaje" rows="6" class="border border-[#DCDCDC] rounded-[4px] px-4 py-3 focus:outline-none resize-none"></textarea>
-                </div>
-                <div class="w-full md:w-1/2 flex flex-col justify-end items-start gap-4">
-                    <h2 class="text-[16px] text-[#000]">*Campos obligatorios</h2>
-                    <button type="submit" class="w-full  h-[40px] bg-[#FF9000] text-white rounded-[6px] text-[15px]">
-                       Enviar consulta
-                    </button>
-                </div>
-            </div>
-        </form>
-        </div>
+        <button type="button" class="quitar-producto lg:ml-auto self-end lg:self-center" aria-label="Quitar producto">
+            <img src="{{ asset('assets/img/contacto/trash.svg') }}" alt="" class="w-[19.5px] h-[24px]">
+        </button>
     </div>
-</div>
-
-    {{-- mapa --}}
-    <div class="max-w-[1366px] mx-auto px-[5%] md:px-[71px] h-[520px] mb-[180px] relative overflow-hidden">
-        <iframe 
-            src="{!! $contacto_contenido->ubicacion !!}" 
-            width="100%" 
-            height="100%" 
-            style="border:0;" 
-            allowfullscreen 
-            loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade">
-        </iframe>
-    </div>
-
-{{-- mapa API--}}
-<div class="max-w-[1366px] mx-auto px-[5%] md:px-[71px] h-[500px] mb-[70px]">
-    <div id="mapaContacto" class="w-full h-full"></div>
-</div>
+</template>
 
 <script src="https://www.google.com/recaptcha/api.js?render={{ env('RECAPTCHA_SITE_KEY') }}"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const formContacto = document.getElementById('formContacto');
-    const celularInput = document.getElementById('celular');
     const recaptchaSiteKey = "{{ env('RECAPTCHA_SITE_KEY') }}";
+    const wrap = document.getElementById('productosWrap');
+    const tpl = document.getElementById('productoRowTpl');
 
-    // Permitir solo números en celular
-    celularInput.addEventListener('input', function(e) {
-        this.value = this.value.replace(/[^0-9]/g, '');
+    // Solo números en teléfono y CUIT
+    ['telefono', 'cuit'].forEach(id => {
+        document.getElementById(id).addEventListener('input', function () {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
     });
 
-    formContacto.addEventListener('submit', function(e) {
+    // ---- filas de producto ----
+    function reindex() {
+        wrap.querySelectorAll('.producto-row').forEach((row, i) => {
+            row.querySelectorAll('[data-field]').forEach(el => {
+                el.name = `productos[${i}][${el.dataset.field}]`;
+            });
+        });
+    }
+
+    function addRow() {
+        const row = tpl.content.firstElementChild.cloneNode(true);
+        const select = row.querySelector('.producto-select');
+        const foto = row.querySelector('.producto-foto');
+        const cant = row.querySelector('.cant-input');
+
+        select.addEventListener('change', () => {
+            const src = select.selectedOptions[0]?.dataset.foto;
+            if (src) { foto.src = src; foto.classList.remove('hidden'); }
+            else { foto.removeAttribute('src'); foto.classList.add('hidden'); }
+        });
+        row.querySelector('.cant-mas').addEventListener('click', () => { cant.value = (parseInt(cant.value) || 0) + 1; });
+        row.querySelector('.cant-menos').addEventListener('click', () => { cant.value = Math.max(0, (parseInt(cant.value) || 0) - 1); });
+        row.querySelector('.quitar-producto').addEventListener('click', () => {
+            if (wrap.children.length > 1) { row.remove(); }
+            else { select.value = ''; select.dispatchEvent(new Event('change')); row.querySelector('[data-field="seccion_id"]').value = ''; cant.value = 0; }
+            reindex();
+        });
+
+        wrap.appendChild(row);
+        reindex();
+    }
+
+    addRow();
+    document.getElementById('agregarProducto').addEventListener('click', addRow);
+
+    // ---- envío ----
+    formContacto.addEventListener('submit', function (e) {
         e.preventDefault();
+
+        // descartar filas sin producto elegido
+        wrap.querySelectorAll('.producto-row').forEach(row => {
+            if (!row.querySelector('.producto-select').value) {
+                row.querySelectorAll('[data-field]').forEach(el => el.removeAttribute('name'));
+            }
+        });
 
         const submitBtn = this.querySelector('button[type="submit"]');
         const originalText = submitBtn.textContent;
-
         submitBtn.disabled = true;
         submitBtn.textContent = 'Enviando...';
 
-        // // 1) Pedir el token a reCAPTCHA
-         grecaptcha.ready(function() {
-             grecaptcha.execute(recaptchaSiteKey, { action: 'contacto' }).then(function(token) {
-                 // 2) Setear el token en el input hidden
-                 document.getElementById('g-recaptcha-response').value = token;
-
-                // 3) Recién acá armar el FormData con el token incluido
+        grecaptcha.ready(function () {
+            grecaptcha.execute(recaptchaSiteKey, { action: 'contacto' }).then(function (token) {
+                document.getElementById('g-recaptcha-response').value = token;
                 const formData = new FormData(formContacto);
 
-                // 4) Hacer el fetch como ya lo tenías
                 fetch(formContacto.action, {
                     method: 'POST',
                     body: formData,
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
                 })
                 .then(response => response.json())
                 .then(data => {
@@ -199,132 +261,84 @@ document.addEventListener('DOMContentLoaded', () => {
                             icon: 'success',
                             title: '¡Mensaje enviado!',
                             text: data.message || 'Tu consulta ha sido enviada exitosamente.',
-                            confirmButtonColor: '#5FBB46'
+                            confirmButtonColor: '#086AFF'
                         });
                         formContacto.reset();
+                        document.getElementById('mensaje').value = ''; // reset() volvería al mensaje predefinido
+                        wrap.innerHTML = '';
+                        addRow();
                     } else {
                         Swal.fire({
                             icon: 'error',
                             title: 'Error',
                             text: data.message || 'Hubo un problema al enviar tu consulta.',
-                            confirmButtonColor: '#0A3858'
+                            confirmButtonColor: '#003879'
                         });
                     }
                 })
-                .catch(error => {
+                .catch(() => {
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
                         text: 'Ocurrió un error. Por favor, intenta nuevamente.',
-                        confirmButtonColor: '#0A3858'
+                        confirmButtonColor: '#003879'
                     });
                 })
                 .finally(() => {
                     submitBtn.disabled = false;
                     submitBtn.textContent = originalText;
+                    reindex();
                 });
             });
         });
-        });
+    });
 });
 </script>
 
+{{-- Mapa: Leaflet + OpenStreetMap (gratuito, sin API key) --}}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-function initMap() {
-    const ubicacion = { 
-        lat: parseFloat("{{ $contacto_contenido->latitud }}"), 
-        lng: parseFloat("{{ $contacto_contenido->longitud }}") 
-    };
+document.addEventListener('DOMContentLoaded', function () {
+    const lat = parseFloat("{{ $contacto_contenido->latitud ?? '' }}");
+    const lng = parseFloat("{{ $contacto_contenido->longitud ?? '' }}");
+    const contenedor = document.getElementById('mapaContacto');
 
-    const grayStyle = [
-        { elementType: 'geometry', stylers: [{ color: '#f5f5f5' }] },
-        { elementType: 'labels.icon', stylers: [{ visibility: 'off' }] },
-        { elementType: 'labels.text.fill', stylers: [{ color: '#9e9e9e' }] },
-        { elementType: 'labels.text.stroke', stylers: [{ color: '#ffffff' }, { weight: 2 }] },
-        {
-            featureType: 'road.highway',
-            elementType: 'geometry',
-            stylers: [{ color: '#ebebeb' }]
-        },
-        {
-            featureType: 'road.highway',
-            elementType: 'geometry.stroke',
-            stylers: [{ color: '#ebebeb' }, { weight: 0.5 }]
-        },
-        {
-            featureType: 'road.arterial',
-            elementType: 'geometry',
-            stylers: [{ color: '#ebebeb' }]
-        },
-        {
-            featureType: 'road.arterial',
-            elementType: 'geometry.stroke',
-            stylers: [{ color: '#e0e0e0' }, { weight: 0.5 }]
-        },
-        {
-            featureType: 'road.local',
-            elementType: 'geometry',
-            stylers: [{ color: '#ebebeb' }]
-        },
-        {
-            featureType: 'road.local',
-            elementType: 'geometry.stroke',
-            stylers: [{ color: '#ebebeb' }, { weight: 0.3 }]
-        },
-        {
-            featureType: 'water',
-            elementType: 'geometry',
-            stylers: [{ color: '#e3e3e3' }]
-        },
-        {
-            featureType: 'landscape.natural',
-            elementType: 'geometry',
-            stylers: [{ color: '#f0f0f0' }]
-        },
-        {
-            featureType: 'poi',
-            elementType: 'geometry',
-            stylers: [{ color: '#ebebeb' }]
-        },
-        {
-            featureType: 'administrative',
-            elementType: 'geometry',
-            stylers: [{ visibility: 'off' }]
-        },
-        {
-            featureType: 'transit',
-            elementType: 'geometry',
-            stylers: [{ color: '#f0f0f0' }]
-        }
-    ];
+    if (!contenedor || isNaN(lat) || isNaN(lng)) return;
 
-    const mapa = new google.maps.Map(document.getElementById("mapaContacto"), {
-        zoom: 15,
-        center: ubicacion,
-        styles: grayStyle,
-        gestureHandling: 'greedy'
-    });
+    // ---- Personalización ----
+    // Colores del mapa: filtro CSS aplicado a las baldosas. Ejemplos:
+    //   gris claro:  'grayscale(1) contrast(.9) brightness(1.1)'
+    //   azulado:     'grayscale(1) sepia(.35) hue-rotate(170deg) saturate(1.6) brightness(1.05)'
+    //   color normal: 'none'
+    const FILTRO_MAPA = 'grayscale(1) contrast(.9) brightness(1.1)';
+    const ZOOM = 15;
 
-    const customIcon = {
-        url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+    // Ícono del pin (SVG propio, tamaño y punto de anclaje configurables)
+    const iconoPin = L.icon({
+        iconUrl: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="30" viewBox="0 0 50 50" fill="none">
-            <path d="M41.6666 20.8334C41.6666 33.3334 24.9999 45.8334 24.9999 45.8334C24.9999 45.8334 8.33325 33.3334 8.33325 20.8334C8.33325 16.4131 10.0892 12.1738 13.2148 9.04824C16.3404 5.92263 20.5796 4.16669 24.9999 4.16669C29.4202 4.16669 33.6594 5.92263 36.785 9.04824C39.9106 12.1738 41.6666 16.4131 41.6666 20.8334Z" fill="#FF9000" stroke="#FF9000" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M41.6666 20.8334C41.6666 33.3334 24.9999 45.8334 24.9999 45.8334C24.9999 45.8334 8.33325 33.3334 8.33325 20.8334C8.33325 16.4131 10.0892 12.1738 13.2148 9.04824C16.3404 5.92263 20.5796 4.16669 24.9999 4.16669C29.4202 4.16669 33.6594 5.92263 36.785 9.04824C39.9106 12.1738 41.6666 16.4131 41.6666 20.8334Z" fill="#086AFF" stroke="#086AFF" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
             <path d="M25 27.0833C28.4518 27.0833 31.25 24.2851 31.25 20.8333C31.25 17.3815 28.4518 14.5833 25 14.5833C21.5482 14.5833 18.75 17.3815 18.75 20.8333C18.75 24.2851 21.5482 27.0833 25 27.0833Z" fill="white" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
         `),
-        scaledSize: new google.maps.Size(70, 70),
-        origin: new google.maps.Point(0, 0),
-        anchor: new google.maps.Point(35, 70)
-    };
-
-    new google.maps.Marker({
-        position: ubicacion,
-        map: mapa,
-        icon: customIcon
+        iconSize: [48, 48],
+        iconAnchor: [24, 48]
     });
-}
+
+    const mapa = L.map(contenedor, { zoomControl: true, attributionControl: true }).setView([lat, lng], ZOOM);
+    mapa.attributionControl.setPrefix(false);
+
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'
+    }).addTo(mapa);
+
+    // Aplica los colores solo a las baldosas (el pin y los controles quedan intactos)
+    mapa.getPane('tilePane').style.filter = FILTRO_MAPA;
+
+    L.marker([lat, lng], { icon: iconoPin }).addTo(mapa);
+});
 </script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAZUlidy4Exa3bvZLRh4qgqx4lwlLy6khw&callback=initMap&libraries=geometry,places" async defer></script>
 
 @endsection
-

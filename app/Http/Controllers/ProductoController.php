@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Producto;
 use Illuminate\Http\Request;
-use App\Models\Marca;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use App\Models\ProductoFoto;
 
 class ProductoController extends Controller
@@ -15,18 +15,14 @@ class ProductoController extends Controller
      */
     public function index(Request $request)
     {
-        // Eager load marca to avoid N+1 and allow searching by marca
-        $query = Producto::with('marca')->orderBy('orden');
+        $query = Producto::orderBy('orden');
 
         if ($request->filled('q')) {
             $term = $request->get('q');
 
-            // Buscar por nombre o código, o por texto de la marca
-            $query->where(function($sub) use ($term) {
+            $query->where(function ($sub) use ($term) {
                 $sub->where('nombre', 'like', "%{$term}%")
-                    ->orWhere('codigo', 'like', "%{$term}%");
-            })->orWhereHas('marca', function($m) use ($term) {
-                $m->where('nombre', 'like', "%{$term}%");
+                    ->orWhere('nombre_completo', 'like', "%{$term}%");
             });
         }
 
@@ -42,10 +38,8 @@ class ProductoController extends Controller
      */
     public function create()
     {
-        $marcas = Marca::orderBy('orden')->get();
-
         return view('content.admin.producto-creador', [
-            'marcas' => $marcas
+            'producto' => new Producto(),
         ]);
     }
 
@@ -54,42 +48,14 @@ class ProductoController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'foto' => 'nullable|image|max:2048',
-            'archivo' => 'nullable|file|max:5120',
-            'codigo' => 'nullable|string|max:255',
-            'precio' => 'nullable|numeric',
-        ]);
+        $this->validar($request);
 
         $producto = new Producto();
-
-        $producto->marca_id = $request->marca_id;
-        $producto->orden = $request->orden;
-        $producto->codigo = $request->codigo;
-        $producto->nombre = $request->nombre;
-        $producto->precio = $request->precio;
-
+        $producto->active = $request->has('active') ? (bool)$request->active : true;
         $producto->destacado = $request->has('destacado') ? (bool)$request->destacado : true;
 
-        if ($request->hasFile('foto')) {
-            $file = $request->file('foto');
-            $name = time() . '_' . $file->getClientOriginalName();
-            $path = $file->storeAs('images', $name, 'public');
+        $this->guardarCampos($producto, $request);
 
-            $producto->foto = Storage::url($path);
-        }
-
-        if ($request->hasFile('archivo')) {
-            $file = $request->file('archivo');
-            $name = time() . '_' . $file->getClientOriginalName();
-            $path = $file->storeAs('files', $name, 'public');
-
-            $producto->archivo = Storage::url($path);
-        }
-
-        $producto->active = $request->has('active') ? (bool)$request->active : true;
-
-        $producto->save();
         return redirect()->route('adm.producto-editor', $producto->id)
             ->with('success', 'Producto creado correctamente. Ahora puedes agregar fotos.');
     }
@@ -100,11 +66,9 @@ class ProductoController extends Controller
     public function show($producto_id)
     {
         $producto = Producto::findOrFail($producto_id);
-        $marcas = Marca::orderBy('orden')->get();
 
         return view('content.admin.producto-editor', [
             'producto' => $producto,
-            'marcas' => $marcas
         ]);
     }
 
@@ -119,62 +83,16 @@ class ProductoController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Producto $producto)
+    public function update(Request $request)
     {
-        $request->validate([
-            'foto' => 'nullable|image|max:2048',
-            'archivo' => 'nullable|file|max:5120',
-            'codigo' => 'nullable|string|max:255',
-            'precio' => 'nullable|numeric',
-        ]);
+        $this->validar($request);
 
-        $producto = Producto::find($request->producto_id) ?? new Producto();
-
-        $producto->marca_id = $request->marca_id;
-        $producto->orden = $request->orden;
-        $producto->codigo = $request->codigo;
-        $producto->nombre = $request->nombre;
-        $producto->precio = $request->precio;
+        $producto = Producto::findOrFail($request->producto_id);
 
         $producto->destacado = $request->has('destacado') ? (bool)$request->destacado : $producto->destacado;
-
-        if ($request->hasFile('foto')) {
-
-            if (!empty($producto->foto)) {
-                $oldPath = str_replace('/storage/', '', $producto->foto);
-
-                if (Storage::disk('public')->exists($oldPath)) {
-                    Storage::disk('public')->delete($oldPath);
-                }
-            }
-
-            $file = $request->file('foto');
-            $name = time() . '_' . $file->getClientOriginalName();
-            $path = $file->storeAs('images', $name, 'public');
-
-            $producto->foto = Storage::url($path);
-        }
-
-        if ($request->hasFile('archivo')) {
-
-            if (!empty($producto->archivo)) {
-                $oldPath = str_replace('/storage/', '', $producto->archivo);
-
-                if (Storage::disk('public')->exists($oldPath)) {
-                    Storage::disk('public')->delete($oldPath);
-                }
-            }
-
-            $file = $request->file('archivo');
-            $name = time() . '_' . $file->getClientOriginalName();
-            $path = $file->storeAs('files', $name, 'public');
-
-            $producto->archivo = Storage::url($path);
-        }
-
         $producto->active = $request->has('active') ? (bool)$request->active : $producto->active;
 
-        $producto->save();
+        $this->guardarCampos($producto, $request);
 
         return redirect()->route('adm.producto')
             ->with('success', 'Producto actualizado correctamente.');
@@ -188,22 +106,11 @@ class ProductoController extends Controller
         $producto = Producto::find($producto_id);
 
         if ($producto) {
+            $this->borrarArchivo($producto->foto);
+            $this->borrarArchivo($producto->archivo);
 
-            if (!empty($producto->foto)) {
-
-                $imagePath = str_replace('/storage/', '', $producto->foto);
-
-                if (Storage::disk('public')->exists($imagePath)) {
-                    Storage::disk('public')->delete($imagePath);
-                }
-            }
-
-            if (!empty($producto->archivo)) {
-                $filePath = str_replace('/storage/', '', $producto->archivo);
-
-                if (Storage::disk('public')->exists($filePath)) {
-                    Storage::disk('public')->delete($filePath);
-                }
+            foreach ($producto->caracteristicas ?? [] as $caracteristica) {
+                $this->borrarArchivo($caracteristica['foto'] ?? null);
             }
 
             $producto->delete();
@@ -263,131 +170,25 @@ class ProductoController extends Controller
     }
 
     /**
-     * Importar productos desde CSV/Excel.
-     * Mapea columnas: codigo -> codigo, descripcion -> nombre, marca -> marca, precio -> precio
-     */
-    public function import(Request $request)
-    {
-        $request->validate([
-            'archivo' => 'required|file|mimes:csv,txt,xls,xlsx,ods',
-        ]);
-
-        $path = $request->file('archivo')->getRealPath();
-        $extension = strtolower($request->file('archivo')->getClientOriginalExtension());
-
-        $rows = [];
-
-        if (in_array($extension, ['xls', 'xlsx', 'ods'])) {
-            try {
-                if (!class_exists('\PhpOffice\\PhpSpreadsheet\\IOFactory')) {
-                    return redirect()->back()->with('error', 'PhpSpreadsheet no está instalado. Instala phpoffice/phpspreadsheet para importar XLS/XLSX.');
-                }
-
-                $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($path);
-                $sheet = $spreadsheet->getActiveSheet();
-                $data = $sheet->toArray(null, true, true, true);
-
-                // Primera fila cabecera
-                $header = [];
-                if (isset($data[1])) {
-                    foreach ($data[1] as $col => $val) {
-                        $header[$col] = strtolower(trim((string)$val));
-                    }
-                }
-
-                for ($i = 2; $i <= count($data); $i++) {
-                    $row = [];
-                    foreach ($data[$i] as $col => $val) {
-                        if (isset($header[$col])) $row[$header[$col]] = $val;
-                    }
-                    if (count($row)) $rows[] = $row;
-                }
-            } catch (\Throwable $e) {
-                return redirect()->back()->with('error', 'Error leyendo el archivo: ' . $e->getMessage());
-            }
-        } else {
-            // CSV
-            if (($handle = fopen($path, 'r')) !== false) {
-                $header = null;
-                while (($data = fgetcsv($handle, 0, ',')) !== false) {
-                    if (!$header) {
-                        $header = array_map(function ($h) { return strtolower(trim($h)); }, $data);
-                    } else {
-                        $rows[] = array_combine($header, $data);
-                    }
-                }
-                fclose($handle);
-            }
-        }
-
-        if (empty($rows)) {
-            return redirect()->back()->with('error', 'No se encontraron filas para procesar.');
-        }
-
-        $creados = 0;
-        $actualizados = 0;
-        $errores = [];
-
-        foreach ($rows as $index => $r) {
-            try {
-                $codigo = $r['codigo'] ?? ($r['ph'] ?? null);
-                $nombre = $r['descripcion'] ?? ($r['descripcion_esp'] ?? ($r['nombre'] ?? null));
-                $marcaNombre = $r['marca'] ?? null;
-                $precioRaw = $r['precio'] ?? null;
-
-                if (empty($codigo)) {
-                    $errores[] = "Fila " . ($index + 2) . ": código vacío";
-                    continue;
-                }
-
-                $producto = Producto::where('codigo', $codigo)->first();
-                if (!$producto) {
-                    $producto = new Producto();
-                    $producto->orden = Producto::count() + 1;
-                    $creados++;
-                } else {
-                    $actualizados++;
-                }
-
-                $producto->codigo = $codigo;
-                if (!empty($nombre)) $producto->nombre = $nombre;
-
-                if (!empty($precioRaw)) {
-                    $precio = floatval(str_replace([',', ' '], ['.', ''], $precioRaw));
-                    $producto->precio = $precio;
-                }
-
-                if (!empty($marcaNombre)) {
-                    $marca = Marca::where('nombre', $marcaNombre)->first();
-
-                    if ($marca) {
-                        $producto->marca_id = $marca->id;
-                    }
-                }
-
-                $producto->save();
-
-            } catch (\Throwable $e) {
-                $errores[] = "Fila " . ($index + 2) . ": " . $e->getMessage();
-            }
-        }
-
-        $mensaje = "Importación completada: {$creados} creados, {$actualizados} actualizados";
-        if (count($errores)) $mensaje .= " (" . count($errores) . " errores)";
-
-        return redirect()->route('adm.producto')->with('success', $mensaje);
-    }
-
-    /**
      * Subir fotos para la galería del producto (AJAX)
      */
     public function fotosStore(Request $request)
     {
         $request->validate([
             'fotos' => 'required',
-            'fotos.*' => 'image|max:2048',
+            'fotos.*' => 'file|mimes:jpg,jpeg,png,webp,gif,mp4,webm|max:51200',
             'productos_id' => 'required|integer',
         ]);
+
+        // Las fotos pueden pesar hasta 2MB; los videos (mp4, webm) hasta 50MB
+        foreach ($request->file('fotos') as $file) {
+            if (!ProductoFoto::urlEsVideo($file->getClientOriginalName()) && $file->getSize() > 2 * 1024 * 1024) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'La foto "' . $file->getClientOriginalName() . '" supera los 2MB.',
+                ], 422);
+            }
+        }
 
         $productos_id = $request->productos_id;
         $ordenInicial = intval($request->orden) ?? 0;
@@ -414,7 +215,7 @@ class ProductoController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Fotos subidas correctamente',
+            'message' => 'Archivos subidos correctamente',
             'fotos' => $saved
         ]);
     }
@@ -438,12 +239,7 @@ class ProductoController extends Controller
     {
         $foto = ProductoFoto::findOrFail($foto_id);
 
-        if (!empty($foto->foto)) {
-            $filePath = str_replace('/storage/', '', $foto->foto);
-            if (Storage::disk('public')->exists($filePath)) {
-                Storage::disk('public')->delete($filePath);
-            }
-        }
+        $this->borrarArchivo($foto->foto);
 
         $foto->delete();
 
@@ -472,11 +268,7 @@ class ProductoController extends Controller
         $producto = Producto::findOrFail($producto_id);
 
         if (!empty($producto->archivo)) {
-            $filePath = str_replace('/storage/', '', $producto->archivo);
-
-            if (Storage::disk('public')->exists($filePath)) {
-                Storage::disk('public')->delete($filePath);
-            }
+            $this->borrarArchivo($producto->archivo);
 
             $producto->archivo = null;
             $producto->save();
@@ -486,75 +278,150 @@ class ProductoController extends Controller
             ->with('success', 'Archivo eliminado correctamente.');
     }
 
-    public function fotosMasivas(Request $request)
-{
-    $request->validate([
-        'fotos'   => 'required|array',
-        'fotos.*' => 'image|max:4096',
-    ]);
- 
-    $asignadas  = 0;
-    $sinProducto = 0;
-    $errores    = 0;
- 
-    // Mapa: código (lowercase) => producto
-    $productos = Producto::all()->keyBy(fn ($p) => strtolower(trim($p->codigo)));
- 
-    // Códigos que recibieron foto en esta carga
-    $codigosConFoto = [];
- 
-    foreach ($request->file('fotos') as $file) {
-        try {
-            // Nombre del archivo sin extensión → código buscado
-            $codigoBuscado = strtolower(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME));
- 
-            if (!isset($productos[$codigoBuscado])) {
-                $sinProducto++;
+    // ============================================================
+    // Helpers
+    // ============================================================
+
+    private function validar(Request $request): void
+    {
+        $request->validate([
+            'foto'                   => 'nullable|image|max:2048',
+            'archivo'                => 'nullable|file|mimes:pdf|max:10240',
+            'caracteristicas'        => 'nullable|array',
+            'caracteristicas.*.foto' => 'nullable|image|max:1024',
+        ]);
+    }
+
+    /**
+     * Asigna textos, archivos y los tres json (ficha técnica, características, colores) y guarda.
+     */
+    private function guardarCampos(Producto $producto, Request $request): void
+    {
+        $producto->orden           = $request->orden;
+        $producto->nombre          = $request->nombre;
+        $producto->nombre_completo = $request->nombre_completo;
+        $producto->descripcion     = $request->descripcion;
+        $producto->aplicacion      = $request->aplicacion;
+        $producto->certificado     = $request->certificado;
+        $producto->tamaños         = $request->input('tamaños');
+
+        // Foto principal
+        if ($request->hasFile('foto')) {
+            $this->borrarArchivo($producto->foto);
+            $producto->foto = $this->subirArchivo($request->file('foto'), 'images');
+        }
+
+        // Ficha técnica (PDF)
+        if ($request->hasFile('archivo')) {
+            $this->borrarArchivo($producto->archivo);
+            $producto->archivo = $this->subirArchivo($request->file('archivo'), 'files');
+        }
+
+        $producto->ficha_tecnica   = $this->armarFichaTecnica($request);
+        $producto->caracteristicas = $this->armarCaracteristicas($request, $producto);
+        $producto->colores         = $this->armarColores($request);
+
+        $producto->save();
+    }
+
+    /**
+     * ficha_tecnica: [{nombre, valor}]
+     */
+    private function armarFichaTecnica(Request $request): array
+    {
+        $filas = [];
+
+        foreach ($request->input('ficha_tecnica', []) as $fila) {
+            $nombre = trim($fila['nombre'] ?? '');
+            $valor  = trim($fila['valor'] ?? '');
+
+            if ($nombre === '' && $valor === '') {
                 continue;
             }
- 
-            $producto = $productos[$codigoBuscado];
- 
-            // Eliminar foto anterior si existe
-            if (!empty($producto->foto)) {
-                $oldPath = ltrim(str_replace('/storage', '', $producto->foto), '/');
-                if (Storage::disk('public')->exists($oldPath)) {
-                    Storage::disk('public')->delete($oldPath);
-                }
-            }
- 
-            // Guardar nueva foto
-            $name = time() . '_' . $file->getClientOriginalName();
-            $path = $file->storeAs('images', $name, 'public');
-            $producto->foto = Storage::url($path);
-            $producto->save();
- 
-            $codigosConFoto[] = strtolower(trim($producto->codigo));
-            $asignadas++;
- 
-        } catch (\Throwable $e) {
-            $errores++;
+
+            $filas[] = ['nombre' => $nombre, 'valor' => $valor];
         }
+
+        return $filas;
     }
- 
-    // Productos activos sin foto coincidente → asignar default.png
-    $defaultAsignados = 0;
-    foreach ($productos as $codigo => $producto) {
-        if (!in_array($codigo, $codigosConFoto)) {
-            // Solo actualizar si aún no tiene foto o si su foto no existe
-            if (empty($producto->foto)) {
-                $producto->foto = '/default.png';
-                $producto->save();
-                $defaultAsignados++;
+
+    /**
+     * caracteristicas: [{foto, titulo}]
+     * Las fotos que ya no se usan se borran del storage.
+     */
+    private function armarCaracteristicas(Request $request, Producto $producto): array
+    {
+        $previas = collect($producto->caracteristicas ?? [])->pluck('foto')->filter()->all();
+        $filas = [];
+
+        foreach ($request->input('caracteristicas', []) as $i => $fila) {
+            $titulo = trim($fila['titulo'] ?? '');
+
+            // Solo se conserva una foto que ya pertenecía al producto
+            $foto = $fila['foto_actual'] ?? null;
+            if (!in_array($foto, $previas, true)) {
+                $foto = null;
+            }
+
+            if ($request->hasFile("caracteristicas.$i.foto")) {
+                $foto = $this->subirArchivo($request->file("caracteristicas.$i.foto"), 'images');
+            }
+
+            if ($titulo === '' && !$foto) {
+                continue;
+            }
+
+            $filas[] = ['foto' => $foto, 'titulo' => $titulo];
+        }
+
+        $conservadas = array_column($filas, 'foto');
+        foreach ($previas as $previa) {
+            if (!in_array($previa, $conservadas, true)) {
+                $this->borrarArchivo($previa);
             }
         }
+
+        return $filas;
     }
- 
-    return redirect()->route('adm.producto')->with('fotos_masivas', [
-        'asignadas'   => $asignadas,
-        'default'     => $defaultAsignados,
-        'sin_producto' => $sinProducto,
-        'errores'     => $errores,
-    ]);
-}
+
+    /**
+     * colores: [{tipo, colores: [clave, ...]}], con claves de Producto::COLORES
+     */
+    private function armarColores(Request $request): array
+    {
+        $filas = [];
+
+        foreach ($request->input('colores', []) as $fila) {
+            $tipo = trim($fila['tipo'] ?? '');
+            if ($tipo === '') {
+                continue;
+            }
+
+            $colores = array_values(array_intersect(
+                array_keys(Producto::COLORES),
+                (array) ($fila['colores'] ?? [])
+            ));
+
+            $filas[] = ['tipo' => $tipo, 'colores' => $colores];
+        }
+
+        return $filas;
+    }
+
+    private function subirArchivo($file, string $carpeta): string
+    {
+        $nombre = time() . '_' . Str::random(4) . '_' . Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME))
+            . '.' . $file->getClientOriginalExtension();
+
+        return Storage::url($file->storeAs($carpeta, $nombre, 'public'));
+    }
+
+    private function borrarArchivo(?string $url): void
+    {
+        if (empty($url)) {
+            return;
+        }
+
+        Storage::disk('public')->delete(ltrim(str_replace('/storage/', '', $url), '/'));
+    }
 }

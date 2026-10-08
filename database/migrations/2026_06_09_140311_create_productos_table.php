@@ -13,11 +13,16 @@ return new class extends Migration
     {
         Schema::create('productos', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('marca_id')->nullable()->constrained('marcas')->nullOnDelete();
             $table->string('orden')->nullable();
             $table->string('nombre')->nullable();
-            $table->string('codigo')->nullable();
-            $table->decimal('precio', 10, 2)->nullable();
+            $table->string('nombre_completo')->nullable();
+            $table->text('descripcion')->nullable();
+            $table->json('ficha_tecnica')->nullable();
+            $table->text('aplicacion')->nullable();
+            $table->text('certificado')->nullable();
+            $table->json('caracteristicas')->nullable();
+            $table->text('tamaños')->nullable();
+            $table->json('colores')->nullable();
             $table->string('foto')->nullable();
             $table->string('archivo')->nullable();
             $table->boolean('active')->default(true);

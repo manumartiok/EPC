@@ -4,27 +4,28 @@ namespace App\Http\Controllers;
 
 use App\Models\Marca;
 use App\Models\Producto;
-use App\Models\ProductoBan;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Schema;
 
 class ProductoBusquedaController extends Controller
 {
     public function productos(Request $request)
     {
-        $marcas = $this->marcas();
-        $productos_ban = ProductoBan::first();
-        $hayFiltros = $this->hayFiltros($request);
-        $productos = collect();
+        $buscar = trim((string) $request->get('buscar', ''));
 
-        if ($hayFiltros) {
-            $productos = $this->filtrarProductos($request)
-                ->orderBy('orden')
-                ->paginate(12)
-                ->withQueryString();
-        }
+        $productos = $this->filtrarProductos($request)
+            ->orderBy('orden')
+            ->get();
 
-        return view('content.web.productos', compact('marcas', 'productos_ban', 'productos', 'hayFiltros'));
+        return view('content.web.productos', compact('productos', 'buscar'));
+    }
+
+    public function detalle($id)
+    {
+        $producto = Producto::with('fotos')
+            ->where('active', true)
+            ->findOrFail($id);
+
+        return view('content.web.productos-detalle', compact('producto'));
     }
 
     public function webProductos(Request $request)
@@ -45,27 +46,6 @@ class ProductoBusquedaController extends Controller
         return view('content.web.webproductos', compact('productos', 'descuentos', 'marcas'));
     }
 
-    public function categoria(Request $request, $id)
-    {
-        $productos_ban = ProductoBan::first();
-        $marca = Marca::findOrFail($id);
-        $marcas = $this->marcas();
-        $buscar = trim((string) $request->get('buscar', ''));
-
-        $productos = Producto::where('marca_id', $marca->id)
-            ->where('active', true)
-            ->when($buscar !== '', function ($query) use ($buscar) {
-                $query->where(function ($sub) use ($buscar) {
-                    $sub->where('nombre', 'like', "%{$buscar}%")
-                        ->orWhere('codigo', 'like', "%{$buscar}%");
-                });
-            })
-            ->orderBy('orden')
-            ->get();
-
-        return view('content.web.productos-categoria', compact('productos', 'marca', 'marcas', 'productos_ban', 'buscar'));
-    }
-
     private function marcas()
     {
         return Marca::where('active', true)
@@ -73,35 +53,15 @@ class ProductoBusquedaController extends Controller
             ->get();
     }
 
-    private function hayFiltros(Request $request): bool
-    {
-        return $request->filled('buscar')
-            || $request->filled('codigo')
-            || $request->filled('marca');
-    }
-
     private function filtrarProductos(Request $request)
     {
-        $query = Producto::with('marca')->where('active', true);
-
-        if ($request->filled('marca')) {
-            $query->where('marca_id', $request->integer('marca'));
-        }
-
-        if ($request->filled('codigo')) {
-            $codigo = trim($request->get('codigo'));
-            $query->where('codigo', 'like', "%{$codigo}%");
-        }
+        $query = Producto::where('active', true);
 
         if ($request->filled('buscar')) {
             $buscar = trim($request->get('buscar'));
             $query->where(function ($sub) use ($buscar) {
                 $sub->where('nombre', 'like', "%{$buscar}%")
-                    ->orWhere('codigo', 'like', "%{$buscar}%");
-
-                if (Schema::hasColumn('productos', 'modelo')) {
-                    $sub->orWhere('modelo', 'like', "%{$buscar}%");
-                }
+                    ->orWhere('nombre_completo', 'like', "%{$buscar}%");
             });
         }
 

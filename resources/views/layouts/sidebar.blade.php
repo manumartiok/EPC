@@ -29,8 +29,16 @@
           <i class="fas fa-chevron-down transition-transform duration-300 group-[.open]:rotate-180"></i>
         </button>
         <ul class="submenu hidden pl-8 mt-1 space-y-1">
-          <li><a href="{{route('adm.nosotros-ban')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Banner</a></li>
           <li><a href="{{ route('adm.nosotros') }}" class="block py-1 px-2 hover:bg-gray-600 rounded">Contenido</a></li>
+        </ul>
+      </li>
+      <li class="group">
+        <button class="flex justify-between items-center w-full py-2 px-3 hover:bg-gray-700 rounded transition focus:outline-none" onclick="toggleSubMenu(this)">
+          <span><i class="fas fa-book mr-2"></i>Catálogo</span>
+          <i class="fas fa-chevron-down transition-transform duration-300 group-[.open]:rotate-180"></i>
+        </button>
+        <ul class="submenu hidden pl-8 mt-1 space-y-1">
+          <li><a href="{{ route('adm.catalogo') }}" class="block py-1 px-2 hover:bg-gray-600 rounded">Contenido</a></li>
         </ul>
       </li>
       <li class="group">
@@ -39,8 +47,6 @@
           <i class="fas fa-chevron-down transition-transform duration-300 group-[.open]:rotate-180"></i>
         </button>
         <ul class="submenu hidden pl-8 mt-1 space-y-1">
-          <li><a href="" class="block py-1 px-2 hover:bg-gray-600 rounded">Banner</a></li>
-          <li><a href="{{route('adm.marca')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Marcas</a></li>
           <li><a href="{{ route('adm.producto') }}" class="block py-1 px-2 hover:bg-gray-600 rounded">Productos</a></li>
         </ul>
       </li>
@@ -50,7 +56,6 @@
           <i class="fas fa-chevron-down transition-transform duration-300 group-[.open]:rotate-180"></i>
         </button>
         <ul class="submenu hidden pl-8 mt-1 space-y-1">
-          <li><a href="{{route('adm.novedade-ban')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Banner</a></li>
           <li><a href="{{route('adm.novedade')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Contenido</a></li>
         </ul>
       </li>
@@ -60,8 +65,8 @@
           <i class="fas fa-chevron-down transition-transform duration-300 group-[.open]:rotate-180"></i>
         </button>
         <ul class="submenu hidden pl-8 mt-1 space-y-1">
-          <li><a href="{{route('adm.contacto-ban')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Banner</a></li>
           <li><a href="{{route('adm.contacto')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Contenido</a></li>
+          <li><a href="{{route('adm.consulta')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Motivos de consulta</a></li>
         </ul>
       </li>
       <li class="group">
@@ -70,22 +75,21 @@
           <i class="fas fa-chevron-down transition-transform duration-300 group-[.open]:rotate-180"></i>
         </button>
         <ul class="submenu hidden pl-8 mt-1 space-y-1">
-          <li><a href="" class="block py-1 px-2 hover:bg-gray-600 rounded">Banner</a></li>
         </ul>
       </li>
-      <li class="group">
+      {{-- <li class="group">
         <button class="flex justify-between items-center w-full py-2 px-3 hover:bg-gray-700 rounded transition focus:outline-none" onclick="toggleSubMenu(this)">
           <span><i class="fas fa-lock mr-2"></i>Zona privada</span>
           <i class="fas fa-chevron-down transition-transform duration-300 group-[.open]:rotate-180"></i>
         </button>
         <ul class="submenu hidden pl-8 mt-1 space-y-1">
          <li><a href="{{route('adm.web-usuarios')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Usuarios</a></li>
-          {{-- <li><a href="{{route('adm.carrito')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Carrito</a></li> --}}
+           <li><a href="{{route('adm.carrito')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Carrito</a></li> 
           <li><a href="{{route('adm.info')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Info. de pagos</a></li>
          <li><a href="{{route('adm.lista')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Lista de precios</a></li>
          <li><a href="{{route('adm.pedidos-historico')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Histórico de pedidos</a></li>
         </ul>
-      </li>
+      </li> --}}
     </ul>
   </div>
 

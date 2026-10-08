@@ -23,49 +23,146 @@
                 <input type="hidden" name="nosotro_id" value="{{ $nosotro->id ?? '' }}">
 
                 <div>
-                    {{-- VIDEO --}}
-                    <div class="mb-4">
-                        <label class="form-label text-gray-700 font-medium mb-2">Video (recomendado 1224x575 | 50MB máximo)</label>
-                        @if (!empty($nosotro->video))
-                            <video autoplay loop muted playsinline class="mb-3 mt-2 w-full max-w-[1224px] h-[575px] object-cover mx-auto">
-                                <source src="{{ $nosotro->video }}" type="video/mp4">
-                                Tu navegador no soporta el video.
-                            </video>
-                        @endif  
-                        <input type="file" name="video" class="form-control" accept="video/*" id="video"/>
-                    </div>
                     {{-- Foto principal --}}
                     <div class="mb-4">
                         <label class="block text-gray-700 font-medium mb-2" for="foto">
-                            Foto (recomendado 600x480) / (2MB tamaño máximo)
+                            Foto (recomendado 600x400) / (2MB tamaño máximo)
                         </label>
                         
                         @if (!empty($nosotro->foto))
-                            <img :src="foto.foto || '{{ $nosotro->foto }}'" alt="Foto" class="mb-3 w-full max-w-[300px] max-h-[240px] object-cover">
+                            <img :src="foto.foto || '{{ $nosotro->foto }}'" alt="Foto" class="mb-3 w-full max-w-[300px] max-h-[200px] object-cover">
                         @endif
                         
                         <input type="file" name="foto" id="foto" @change="subirFoto"
                             class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
                     </div>
 
-                    {{-- Título 1 (directo) --}}
+                    {{-- Título 1 / Texto 1 --}}
                     <div class="mb-4">
                         <label class="block text-gray-700 font-medium mb-2">
                             Título 1
+                        </label>
+                        <input type="text" name="titulo1"
+                            value="{{ $nosotro->titulo1 ?? '' }}"
+                            class="w-full border border-gray-300 rounded px-4 py-2">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-gray-700 font-medium mb-2">
+                            Texto 1
                         </label>
                         <input type="text" name="texto1"
                             value="{{ $nosotro->texto1 ?? '' }}"
                             class="w-full border border-gray-300 rounded px-4 py-2">
                     </div>
 
-                    {{-- Título 2 (directo) --}}
+                    {{-- Título 2 / Texto 2 --}}
                     <div class="mb-4">
                         <label class="block text-gray-700 font-medium mb-2">
                             Título 2
                         </label>
+                        <input type="text" name="titulo2"
+                            value="{{ $nosotro->titulo2 ?? '' }}"
+                            class="w-full border border-gray-300 rounded px-4 py-2">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-gray-700 font-medium mb-2">
+                            Texto 2
+                        </label>
                         <input type="text" name="texto2"
                             value="{{ $nosotro->texto2 ?? '' }}"
                             class="w-full border border-gray-300 rounded px-4 py-2">
+                    </div>
+
+                    {{-- Título 3 / Texto 3 --}}
+                    <div class="mb-4">
+                        <label class="block text-gray-700 font-medium mb-2">Título 3</label>
+                        <input type="text" name="titulo3"
+                            value="{{ $nosotro->titulo3 ?? '' }}"
+                            class="w-full border border-gray-300 rounded px-4 py-2">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-gray-700 font-medium mb-2">Texto 3</label>
+                        <input type="text" name="texto3"
+                            value="{{ $nosotro->texto3 ?? '' }}"
+                            class="w-full border border-gray-300 rounded px-4 py-2">
+                    </div>
+
+                    {{-- Título 4 / Texto 4 --}}
+                    <div class="mb-4">
+                        <label class="block text-gray-700 font-medium mb-2">Título 4</label>
+                        <input type="text" name="titulo4"
+                            value="{{ $nosotro->titulo4 ?? '' }}"
+                            class="w-full border border-gray-300 rounded px-4 py-2">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-gray-700 font-medium mb-2">Texto 4</label>
+                        <input type="text" name="texto4"
+                            value="{{ $nosotro->texto4 ?? '' }}"
+                            class="w-full border border-gray-300 rounded px-4 py-2">
+                    </div>
+
+                    {{-- Jaula 1 --}}
+                    <div class="mb-4">
+                        <label class="block text-gray-700 font-medium mb-2">Jaula título 1</label>
+                        <input type="text" name="jaula_titulo1"
+                            value="{{ $nosotro->jaula_titulo1 ?? '' }}"
+                            class="w-full border border-gray-300 rounded px-4 py-2">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-gray-700 font-medium mb-2">Jaula descripción 1</label>
+                        <textarea name="jaula_descripcion1" class="ckeditor w-full rounded" rows="6">
+                            {!! $nosotro->jaula_descripcion1 ?? '' !!}
+                        </textarea>
+                    </div>
+
+                    {{-- Jaula 2 --}}
+                    <div class="mb-4">
+                        <label class="block text-gray-700 font-medium mb-2">Jaula título 2</label>
+                        <input type="text" name="jaula_titulo2"
+                            value="{{ $nosotro->jaula_titulo2 ?? '' }}"
+                            class="w-full border border-gray-300 rounded px-4 py-2">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-gray-700 font-medium mb-2">Jaula descripción 2</label>
+                        <textarea name="jaula_descripcion2" class="ckeditor w-full rounded" rows="6">
+                            {!! $nosotro->jaula_descripcion2 ?? '' !!}
+                        </textarea>
+                    </div>
+
+                    {{-- Jaula 3 --}}
+                    <div class="mb-4">
+                        <label class="block text-gray-700 font-medium mb-2">Jaula título 3</label>
+                        <input type="text" name="jaula_titulo3"
+                            value="{{ $nosotro->jaula_titulo3 ?? '' }}"
+                            class="w-full border border-gray-300 rounded px-4 py-2">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-gray-700 font-medium mb-2">Jaula descripción 3</label>
+                        <textarea name="jaula_descripcion3" class="ckeditor w-full rounded" rows="6">
+                            {!! $nosotro->jaula_descripcion3 ?? '' !!}
+                        </textarea>
+                    </div>
+
+                    {{-- Jaula 4 --}}
+                    <div class="mb-4">
+                        <label class="block text-gray-700 font-medium mb-2">Jaula título 4</label>
+                        <input type="text" name="jaula_titulo4"
+                            value="{{ $nosotro->jaula_titulo4 ?? '' }}"
+                            class="w-full border border-gray-300 rounded px-4 py-2">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-gray-700 font-medium mb-2">Jaula descripción 4</label>
+                        <textarea name="jaula_descripcion4" class="ckeditor w-full rounded" rows="6">
+                            {!! $nosotro->jaula_descripcion4 ?? '' !!}
+                        </textarea>
                     </div>
 
                     {{-- Descripción (directo) --}}

@@ -10,6 +10,7 @@ use App\Http\Controllers\PerfilController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\HomeBannerController;
 use App\Http\Controllers\NosotroController;
+use App\Http\Controllers\CatalogoController;
 use App\Http\Controllers\NosotroBannerController;
 use App\Http\Controllers\MarcaController;
 use App\Http\Controllers\ProductoController;
@@ -17,6 +18,7 @@ use App\Http\Controllers\ProductoBusquedaController;
 use App\Http\Controllers\NovedadeController;
 use App\Http\Controllers\NovedadeBannerController;
 use App\Http\Controllers\ContactoController;
+use App\Http\Controllers\ConsultaController;
 use App\Http\Controllers\ContactoBannerController;
 
 use App\Http\Controllers\WebUsuarioController;
@@ -24,9 +26,6 @@ use App\Http\Controllers\ListaController;
 use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\InfoController;
 use App\Http\Controllers\InfoPagoController;
-use App\Models\Marca;
-use App\Models\Producto;
-use App\Models\ProductoBan;
 
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\LogoController;
@@ -64,6 +63,10 @@ Route::middleware(AdminAuth::class)->group(function () {
     Route::get('/admin/nosotros', [NosotroController::class, 'show'])->name('adm.nosotros');
     Route::post('/admin/nosotros/update', [NosotroController::class,'update'])->name('adm.nosotros-update');
 
+    //catalogo
+    Route::get('/admin/catalogo', [CatalogoController::class, 'show'])->name('adm.catalogo');
+    Route::post('/admin/catalogo/update', [CatalogoController::class, 'update'])->name('adm.catalogo-update');
+
     //nosotros banner
     Route::get('/admin/nosotros/banner', [NosotroBannerController::class, 'show'])->name('adm.nosotros-ban');
     Route::post('/admin/nosotros/banner/update', [NosotroBannerController::class,'update'])->name('adm.nosotros-ban-update');
@@ -90,8 +93,12 @@ Route::middleware(AdminAuth::class)->group(function () {
     Route::get('/admin/producto/switch/{producto_id}', [ProductoController::class, 'switch'])->name('adm.producto-switch');
     Route::get('/admin/producto/destacado/{producto_id}', [ProductoController::class, 'destacado'])->name('adm.producto-destacado');
     Route::get('/admin/producto/delete-archivo/{producto_id}', [ProductoController::class, 'deleteArchivo'])->name('adm.producto-delete-archivo');
-    Route::post('/admin/producto/import', [ProductoController::class, 'import'])->name('adm.producto-import');
-    Route::post('/admin/producto/fotos-masivas', [ProductoController::class, 'fotosMasivas'])->name('adm.producto-fotos-masivas');
+
+    // galería de fotos del producto
+    Route::post('/admin/producto/fotos/store', [ProductoController::class, 'fotosStore'])->name('adm.producto-fotos-store');
+    Route::post('/admin/producto/fotos/reordenar', [ProductoController::class, 'fotosReordenar'])->name('adm.producto-fotos-reordenar');
+    Route::get('/admin/producto/fotos/destroy/{foto_id}', [ProductoController::class, 'fotosDestroy'])->name('adm.producto-fotos-destroy');
+    Route::get('/admin/producto/fotos/switch/{foto_id}', [ProductoController::class, 'fotosSwitch'])->name('adm.producto-fotos-switch');
     Route::post('/admin/producto/reordenar', [ProductoController::class, 'reordenar'])->name('adm.producto-reordenar');
 
     //novedades
@@ -113,7 +120,17 @@ Route::middleware(AdminAuth::class)->group(function () {
     Route::get('/admin/contacto', [ContactoController::class, 'show'])->name('adm.contacto');
     Route::post('/admin/contacto/update', [ContactoController::class, 'update'])->name('adm.contacto.update');
 
-    // contacto banner 
+    // motivos de consulta (formulario de contacto)
+    Route::get('/admin/consulta', [ConsultaController::class, 'index'])->name('adm.consulta');
+    Route::get('/admin/consulta/creador', [ConsultaController::class, 'create'])->name('adm.consulta-creador');
+    Route::post('/admin/consulta/store', [ConsultaController::class, 'store'])->name('adm.consulta-store');
+    Route::get('/admin/consulta/editor/{consulta_id}', [ConsultaController::class, 'show'])->name('adm.consulta-editor');
+    Route::post('/admin/consulta/update', [ConsultaController::class, 'update'])->name('adm.consulta-update');
+    Route::get('/admin/consulta/destroy/{consulta_id}', [ConsultaController::class, 'destroy'])->name('adm.consulta-destroy');
+    Route::get('/admin/consulta/switch/{consulta_id}', [ConsultaController::class, 'switch'])->name('adm.consulta-switch');
+    Route::post('/admin/consulta/reordenar', [ConsultaController::class, 'reordenar'])->name('adm.consulta-reordenar');
+
+    // contacto banner
     Route::get('/admin/contacto/banner', [ContactoBannerController::class, 'show'])->name('adm.contacto-ban');
     Route::post('/admin/contacto/banner/update', [ContactoBannerController::class, 'update'])->name('adm.contacto-ban.update');
 
@@ -232,22 +249,13 @@ Route::get('/nosotros', function () {
 
 Route::get('/productos', [ProductoBusquedaController::class, 'productos'])->name('productos');
 
-Route::get('/productos/marca/{id}', [ProductoBusquedaController::class, 'categoria'])->name('productos.categoria');
+// Las categorías (marcas) ya no existen en productos: se mantiene la ruta para no romper enlaces (ej: home)
+Route::get('/productos/marca/{id}', function () {
+    return redirect()->route('productos');
+})->name('productos.categoria');
 
 // Producto detalle
-Route::get('/productos/detalle/{id}', function ($id) {
-    $producto = Producto::with('marca', 'fotos')->findOrFail($id);
-    $marcas = Marca::where('active', true)->orderBy('orden')->get();
-    $productos_ban = ProductoBan::first();
-    $related = Producto::where('marca_id', $producto->marca_id)
-        ->where('active', true)
-        ->where('id', '!=', $producto->id)
-        ->orderBy('orden')
-        ->limit(3)
-        ->get();
-
-    return view('content.web.productos-detalle', compact('producto', 'marcas', 'productos_ban', 'related'));
-})->name('productos.detalle');
+Route::get('/productos/detalle/{id}', [ProductoBusquedaController::class, 'detalle'])->name('productos.detalle');
 
 Route::get('/novedades', function () {
     return view('content.web.novedade');})->name('novedades');
@@ -256,6 +264,12 @@ Route::get('/novedades/detalle/{id}', [NovedadeController::class, 'detalle'])->n
 
 Route::get('/contacto', function () {
     return view('content.web.contacto');})->name('contacto'); 
+
+Route::get('/calidad', function () {
+    return view('content.web.calidad');})->name('calidad');
+    
+Route::get('/catalogo', function () {
+    return view('content.web.catalogo');})->name('catalogo'); 
 
 
 Route::post('/contacto/enviar', [FormController::class, 'contacto'])->name('form.contacto');

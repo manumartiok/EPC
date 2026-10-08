@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('orden')->nullable();
             $table->string('foto');
             $table->string('tipo_medio')->default('imagen');
+            $table->string('texto_chico')->nullable();
             $table->string('titulo')->nullable();
             $table->string('texto')->nullable();
             $table->boolean('active')->default(true);

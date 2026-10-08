@@ -1,25 +1,9 @@
-@php
-    $novedades_ban = App\Models\NovedadeBanner::first();
-@endphp
 
 @extends('layouts.web')
 
 @section('title', $novedade->titulo)
 
 @section('content')
-
-{{-- banner --}}
-<div class="w-full h-[300px] bg-cover bg-center letra text-white pt-[120px] pb-[70px]"
-     style="background-image: url('{{ $novedades_ban->foto }}');">
-    <div class="h-full max-w-[1366px] mx-auto px-[5%] md:px-[71px] flex flex-col justify-between">
-        <h3 class="text-[12px]">
-            <a class="font-bold" href="{{ route('home') }}">Inicio</a> > Novedades
-        </h3>
-        <h1 class="text-[32px] font-medium">
-            {{ $novedades_ban->texto }}
-        </h1>
-    </div>
-</div>
 
 {{-- contenido --}}
 <div class="h-auto letra mx-auto px-[5%] md:px-[71px] max-w-[1366px] pt-[80px] pb-[110px]">
@@ -36,7 +20,7 @@
         {{-- texto --}}
         <div class="flex flex-col justify-center">
 
-            <h4 class="text-[14px] font-bold text-[#FF9000] mb-[8px]">
+            <h4 class="text-[14px] font-bold text-[#00B1F6] mb-[8px]">
                 {{ $novedade->texto_chico }}
             </h4>
 

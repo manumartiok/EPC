@@ -34,17 +34,5 @@ class DatabaseSeeder extends Seeder
             'active' => true,
         ]);
 
-        Marca::create([
-            'nombre' => 'prueba',
-            'active' => true,
-        ]);
-
-        Producto::create([
-            'marca_id' => 1,
-            'nombre' => 'prueba',
-            'codigo' => '1ab',
-            'precio' => '1000',
-            'active' => true,
-        ]);
     }
 }

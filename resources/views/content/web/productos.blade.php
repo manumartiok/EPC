@@ -1,95 +1,55 @@
-@php
-    $productos_ban = $productos_ban ?? App\Models\ProductoBan::first();
-    $marcas = $marcas ?? App\Models\Marca::where('active', true)->orderBy('orden')->get();
-    $hayFiltros = $hayFiltros ?? (request()->filled('buscar') || request()->filled('codigo') || request()->filled('marca'));
-@endphp
-
 @extends('layouts.web')
 
 @section('title', 'Productos')
 
 @section('content')
 
-<div class="w-full h-[280px] bg-cover bg-center letra text-white "
-     style="background-image: url('{{ $productos_ban->foto }}');">
-    <div class="h-full max-w-[1366px] mx-auto px-[5%] md:px-[71px] pb-[70px] pt-[24px] flex flex-col justify-between">
-        <h3 class="text-[12px]">
-            <a class="font-bold" href="{{ route('home') }}">Inicio</a> > Productos
-        </h3>
-        <h1 class="text-[40px] font-bold">{{ $productos_ban->texto }}</h1>
-    </div>
-</div>
+<div class="letra bg-[#F2F5F8] text-[#303030]">
+    <div class="max-w-[1366px] mx-auto px-[5%] lg:px-[71px] pt-[24px] pb-[120px]">
 
-<div class="h-auto letra mx-auto px-[5%] md:px-[71px] max-w-[1366px] pt-[40px] pb-[60px]">
-    <x-product-search :action="route('productos')" :marcas="$marcas" />
+        {{-- breadcrumb --}}
+        <p class="text-[12px] leading-[1.5]"><a href="{{ route('home') }}" class="font-bold">Inicio</a> &gt; Productos</p>
 
-    @if($hayFiltros)
-        <div class="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-[20px]">
+        {{-- encabezado + buscador --}}
+        <div class="mt-[70px] flex flex-col lg:flex-row lg:items-end lg:justify-between gap-[24px]">
+            <div>
+                <p class="text-[16px] leading-[1.5] text-[#086AFF]">CATÁLOGO COMPLETO</p>
+                <h1 class="mt-[1px] text-[32px] lg:text-[40px] leading-[1.2] font-bold text-black">Productos</h1>
+            </div>
+
+            <form method="GET" action="{{ route('productos') }}"
+                  class="flex items-center gap-[8px] w-full lg:w-[288px] h-[50px] bg-white border border-[#DEDFE0] px-[24px]">
+                <button type="submit" aria-label="Buscar" class="shrink-0 hover:scale-100">
+                    <img src="{{ asset('assets/img/productos/search.svg') }}" alt="" class="w-[24px] h-[24px]">
+                </button>
+                <input type="text" name="buscar" value="{{ $buscar }}" placeholder="Buscar por productos"
+                       class="w-full min-w-0 text-[14px] leading-[1.5] text-[#303030] placeholder:text-[#303030]/50 bg-transparent outline-none">
+            </form>
+        </div>
+
+        {{-- productos --}}
+        <div class="mt-[32px] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[24px]">
             @forelse($productos as $producto)
-                <a href="{{ route('productos.detalle', ['id' => $producto->id]) }}" class="border border-gray-200 rounded-[13px] overflow-hidden hover:shadow-lg transition-shadow duration-300 bg-white">
-                    <div class="w-full h-[240px] flex items-center justify-center overflow-hidden p-3">
+                <a href="{{ route('productos.detalle', ['id' => $producto->id]) }}"
+                   class="bg-white border border-[#DEDFE0] flex flex-col">
+                    <div class="w-full h-[230px] overflow-hidden flex items-center justify-center bg-white">
                         @if(!empty($producto->foto))
                             <img src="{{ asset($producto->foto) }}" alt="{{ $producto->nombre }}" class="w-full h-full object-contain">
-                        @else
-                            <div class="w-full h-full flex items-center justify-center text-gray-400">
-                                Sin imagen
-                            </div>
                         @endif
                     </div>
 
-                    <hr class="border-gray-200">
-
-                    <div class="p-4">
-                        @if(!empty($producto->codigo))
-                            <div class="text-[15px] text-[#A60000] font-bold">{{ $producto->codigo }}</div>
-                        @endif
-                        <h3 class="text-[16px] font-semibold text-gray-700">
-                            {{ $producto->nombre }}
-                        </h3>
-                        @if($producto->marca)
-                            <p class="text-[13px] text-gray-500 mt-1">{{ $producto->marca->nombre }}</p>
-                        @endif
+                    <div class="mx-[24px] border-t border-[#DEDFE0] flex items-center justify-between gap-[12px] h-[60px]">
+                        <h3 class="text-[16px] leading-[1.2] font-bold text-[#003879]">{{ $producto->nombre }}</h3>
+                        <img src="{{ asset('assets/img/productos/arrow-right.svg') }}" alt="" class="w-[16px] h-[16px] shrink-0">
                     </div>
                 </a>
             @empty
-                <div class="col-span-full w-full p-8 bg-white border border-gray-200 rounded-[8px]">
-                    <p class="text-gray-600 text-sm">No se encontraron productos con esos filtros.</p>
+                <div class="col-span-full bg-white border border-[#DEDFE0] p-[24px]">
+                    <p class="text-[16px] leading-[1.5]">No se encontraron productos.</p>
                 </div>
             @endforelse
         </div>
-
-        @if(method_exists($productos, 'links'))
-            <div class="mt-[40px]">
-                {{ $productos->links() }}
-            </div>
-        @endif
-    @else
-        <div class="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-[20px]">
-            @foreach($marcas as $marca)
-                <a href="{{ route('productos.categoria', $marca->id) }}" class="border border-gray-200 rounded-[13px] overflow-hidden hover:shadow-lg transition-shadow duration-300">
-                    <div class="w-full h-[262px] overflow-hidden ">
-                                @if(!empty($marca->foto))
-                            <img src="{{ asset($marca->foto) }}"
-                                alt="{{ $marca->nombre }}"
-                                class="w-full h-full object-cover">
-                        @else
-                            <div class="w-full h-full flex items-center justify-center text-gray-400">
-                                Sin imagen
-                            </div>
-                        @endif
-                    </div>
-
-                    <hr class="border-gray-200">
-
-                    <div class="p-4">
-                        <h3 class="text-[18px] font-semibold text-gray-700 text-center">
-                            {{ $marca->nombre }}
-                        </h3>
-                    </div>
-                </a>
-            @endforeach
-        </div>
-    @endif
+    </div>
 </div>
 
 @endsection

@@ -26,20 +26,6 @@
                        name="contactos_id" 
                        value="{{ $contacto->id ?? '' }}">
 
-                 {{-- CAMPOS SUPERIORES (1 COLUMNA) --}}
-                <div>
-
-                    {{-- Mapa --}}
-                    <div class="mb-4">
-                        <label class="block text-gray-700 font-medium mb-2">Mapa (iframe)</label>
-                        <input type="text" name="ubicacion" value="{{ $contacto->ubicacion ?? '' }}"
-                            class="w-full border border-gray-300 rounded px-4 py-2">
-                    </div>
-
-
-                </div>
-
-
                 {{-- COORDENADAS --}}
                 <div class="grid grid-cols-2 gap-6">
                     <div class="mb-4">
@@ -79,39 +65,12 @@
                                class="w-full border border-gray-300 rounded px-4 py-2">
                     </div>
 
-                    {{-- Mail secundario --}}
-                    <div class="mb-4">
-                        <label class="block text-gray-700 font-medium mb-2">Mail 2</label>
-                        <input type="email" 
-                               name="mail2" 
-                               value="{{ $contacto->mail2 ?? '' }}"
-                               class="w-full border border-gray-300 rounded px-4 py-2">
-                    </div>
-
-                    {{-- Mail terciario --}}
-                    <div class="mb-4">
-                        <label class="block text-gray-700 font-medium mb-2">Mail 3</label>
-                        <input type="email" 
-                               name="mail3" 
-                               value="{{ $contacto->mail3 ?? '' }}"
-                               class="w-full border border-gray-300 rounded px-4 py-2">
-                    </div>
-
                     {{-- Teléfono --}}
                     <div class="mb-4">
                         <label class="block text-gray-700 font-medium mb-2">Teléfono</label>
                         <input type="text" 
                                name="telefono" 
                                value="{{ $contacto->telefono ?? '' }}"
-                               class="w-full border border-gray-300 rounded px-4 py-2">
-                    </div>
-
-                    {{-- Teléfono secundario --}}
-                    <div class="mb-4">
-                        <label class="block text-gray-700 font-medium mb-2">Teléfono 2</label>
-                        <input type="text" 
-                               name="telefono2" 
-                               value="{{ $contacto->telefono2 ?? '' }}"
                                class="w-full border border-gray-300 rounded px-4 py-2">
                     </div>
 
