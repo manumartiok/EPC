@@ -33,6 +33,7 @@ class Producto extends Model
         'ficha_tecnica',
         'aplicacion',
         'certificado',
+        'caracteristicas_tecnicas',
         'caracteristicas',
         'tamaños',
         'colores',

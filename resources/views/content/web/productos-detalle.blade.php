@@ -45,6 +45,18 @@
     /* Todas las columnas menos la primera van centradas (título, valores y checks) */
     .tabla-html td:not(:first-child), .tabla-html th:not(:first-child) { text-align: center; }
     .tabla-html td img { display: block; margin: 0 auto; }
+
+    /* Tabla de "características técnicas" (HTML del editor): fila 1 = títulos, fila 2 = unidades, resto = datos */
+    .tabla-tecnica figure.table { display: block; width: 100% !important; margin: 0; }
+    .tabla-tecnica table { width: 100% !important; min-width: 960px; table-layout: auto; border-collapse: collapse; color: #000; text-transform: uppercase; }
+    .tabla-tecnica td, .tabla-tecnica th { padding: 0 8px 0 4px; text-align: left; font-size: 12px; line-height: 1.5; }
+    .tabla-tecnica tr:nth-child(-n+2) td, .tabla-tecnica tr:nth-child(-n+2) th { font-size: 11px; font-weight: 700; }
+    .tabla-tecnica tr:first-child td, .tabla-tecnica tr:first-child th { padding-top: 0; padding-bottom: 6px; vertical-align: bottom; opacity: .5; }
+    .tabla-tecnica tr:nth-child(2) td, .tabla-tecnica tr:nth-child(2) th { padding-top: 6px; padding-bottom: 6px; }
+    .tabla-tecnica tr:nth-child(n+2) td, .tabla-tecnica tr:nth-child(n+2) th { border-bottom: 1px solid #DEDFE0; }
+    .tabla-tecnica tr:nth-child(n+3) td, .tabla-tecnica tr:nth-child(n+3) th { height: 40px; vertical-align: middle; text-transform: none; }
+    .tabla-tecnica tr:nth-child(n+4):nth-child(even) { background: #fff; }
+    .tabla-tecnica tr:nth-child(2), .tabla-tecnica tr:nth-child(2) td, .tabla-tecnica tr:nth-child(2) th { background-color: #E6EBF1 !important; } /* #F2F5F8 con mix-blend multiply sobre el fondo de la página (#F2F5F8), como en el Figma */
 </style>
 
 <div class="letra bg-[#F2F5F8] text-[#303030]">
@@ -203,6 +215,16 @@
                 <div class="tabla-html w-full">{!! $tablaTamanos !!}</div>
             </div>
             @endif
+        </div>
+        @endif
+
+        {{-- características técnicas --}}
+        @if($producto->caracteristicas_tecnicas)
+        <div class="mt-[80px]">
+            <h2 class="text-[26px] lg:text-[32px] leading-[1.2] font-bold text-[#003879]">Características técnicas</h2>
+            <div class="mt-[24px] w-full overflow-x-auto">
+                <div class="tabla-tecnica w-full">{!! $producto->caracteristicas_tecnicas !!}</div>
+            </div>
         </div>
         @endif
 

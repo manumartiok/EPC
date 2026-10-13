@@ -303,6 +303,7 @@ class ProductoController extends Controller
         $producto->descripcion     = $request->descripcion;
         $producto->aplicacion      = $request->aplicacion;
         $producto->certificado     = $request->certificado;
+        $producto->caracteristicas_tecnicas = $request->caracteristicas_tecnicas;
         $producto->tamaños         = $request->input('tamaños');
 
         // Foto principal

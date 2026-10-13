@@ -11,6 +11,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\HomeBannerController;
 use App\Http\Controllers\NosotroController;
 use App\Http\Controllers\CatalogoController;
+use App\Http\Controllers\CalidadController;
 use App\Http\Controllers\NosotroBannerController;
 use App\Http\Controllers\MarcaController;
 use App\Http\Controllers\ProductoController;
@@ -66,6 +67,10 @@ Route::middleware(AdminAuth::class)->group(function () {
     //catalogo
     Route::get('/admin/catalogo', [CatalogoController::class, 'show'])->name('adm.catalogo');
     Route::post('/admin/catalogo/update', [CatalogoController::class, 'update'])->name('adm.catalogo-update');
+
+    //calidad
+    Route::get('/admin/calidad', [CalidadController::class, 'show'])->name('adm.calidad');
+    Route::post('/admin/calidad/update', [CalidadController::class, 'update'])->name('adm.calidad-update');
 
     //nosotros banner
     Route::get('/admin/nosotros/banner', [NosotroBannerController::class, 'show'])->name('adm.nosotros-ban');

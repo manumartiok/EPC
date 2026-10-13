@@ -43,6 +43,15 @@
       </li>
       <li class="group">
         <button class="flex justify-between items-center w-full py-2 px-3 hover:bg-gray-700 rounded transition focus:outline-none" onclick="toggleSubMenu(this)">
+          <span><i class="fas fa-award mr-2"></i>Calidad</span>
+          <i class="fas fa-chevron-down transition-transform duration-300 group-[.open]:rotate-180"></i>
+        </button>
+        <ul class="submenu hidden pl-8 mt-1 space-y-1">
+          <li><a href="{{ route('adm.calidad') }}" class="block py-1 px-2 hover:bg-gray-600 rounded">Contenido</a></li>
+        </ul>
+      </li>
+      <li class="group">
+        <button class="flex justify-between items-center w-full py-2 px-3 hover:bg-gray-700 rounded transition focus:outline-none" onclick="toggleSubMenu(this)">
           <span><i class="fas fa-box mr-2"></i>Productos</span>
           <i class="fas fa-chevron-down transition-transform duration-300 group-[.open]:rotate-180"></i>
         </button>
