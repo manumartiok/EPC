@@ -40,21 +40,25 @@
     @endif --}}
 
     <!-- navbar -->
-    <nav class="top-0 left-0 w-full z-50 bg-white shadow-[0px_4px_4px_0px_rgba(0,0,0,0.05)] {{ $navbarClass ?? 'relative' }}">
+    @php
+        $navTransparente = str_contains($navbarClass ?? '', 'navbar-home');
+        $iconoNav = $navTransparente ? 'brightness-0 invert' : '';
+    @endphp
+    <nav class="top-0 left-0 w-full z-50 {{ $navTransparente ? 'bg-white/[0.03] text-white' : 'bg-white' }} shadow-[0px_4px_4px_0px_rgba(0,0,0,0.05)] {{ $navbarClass ?? 'relative' }}">
         <div id="navbar" class="nav-layout letra relative flex items-center justify-between mx-auto px-[5%] lg:px-[71px] max-w-[1366px] h-[90px]">
 
             <!-- Logo -->
             <a href="{{route('home')}}" class="flex-shrink-0">
-                <img src="{{$logos->foto_nav2}}" alt="Logo" class="h-[56px] w-auto">
+                <img src="{{ $navTransparente ? $logos->foto_nav : $logos->foto_nav2 }}" alt="Logo" class="h-[56px] w-auto">
             </a>
 
             <!-- Botón Hamburguesa (solo en móvil) -->
-            <button id="menu-toggle" class="lg:hidden text-2xl ml-auto text-[#303030]">
+            <button id="menu-toggle" class="lg:hidden text-2xl ml-auto {{ $navTransparente ? 'text-white' : 'text-[#303030]' }}">
                 <i class="fa-solid fa-bars"></i>
             </button>
 
             <!-- Menú y accesos (desktop) -->
-            <div class="hidden lg:flex items-center gap-[24px] text-[16px] text-[#303030]">
+            <div class="hidden lg:flex items-center gap-[24px] text-[16px] {{ $navTransparente ? 'text-white' : 'text-[#303030]' }}">
                 <div class="flex items-center">
                     <a href="{{ route('nosotros') }}" class="p-[10px] {{ Request::is('nosotros') ? 'font-bold' : '' }}">NOSOTROS</a>
                     <a href="{{ route('productos') }}" class="p-[10px] {{ Request::is('productos') ? 'font-bold' : '' }}">PRODUCTOS</a>
@@ -66,12 +70,12 @@
 
                 <div class="flex items-center gap-[21px]">
                     <button type="button" id="nav-search-toggle" aria-label="Buscar" aria-expanded="false" aria-controls="nav-search">
-                        <img src="{{ asset('assets/img/nav/search.svg') }}" alt="" class="w-[24px] h-[24px]">
+                        <img src="{{ asset('assets/img/nav/search.svg') }}" alt="" class="{{ $iconoNav }} w-[24px] h-[24px]">
                     </button>
-                    <img src="{{ asset('assets/img/nav/divider.svg') }}" alt="" class="h-[25.5px] w-px">
+                    <img src="{{ asset('assets/img/nav/divider.svg') }}" alt="" class="{{ $iconoNav }} h-[25.5px] w-px">
                     <div class="flex items-center gap-[11px]">
-                        <a href="{{ $contacto_contenido?->facebook }}" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><img src="{{ asset('assets/img/nav/facebook.svg') }}" alt="" class="w-[18px] h-[18px]"></a>
-                        <a href="{{ $contacto_contenido?->instagram }}" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><img src="{{ asset('assets/img/nav/instagram.svg') }}" alt="" class="w-[18px] h-[18px]"></a>
+                        <a href="{{ $contacto_contenido?->facebook }}" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><img src="{{ asset('assets/img/nav/facebook.svg') }}" alt="" class="{{ $iconoNav }} w-[18px] h-[18px]"></a>
+                        <a href="{{ $contacto_contenido?->instagram }}" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><img src="{{ asset('assets/img/nav/instagram.svg') }}" alt="" class="{{ $iconoNav }} w-[18px] h-[18px]"></a>
                     </div>
                 </div>
             </div>
@@ -157,7 +161,9 @@
                     <input type="email" id="newsletterEmail" name="email" placeholder="Email" required
                         class="flex-1 min-w-0 h-full px-[12px] text-[14px] text-white placeholder-white bg-transparent focus:outline-none">
                     <button type="submit" class="px-[12px] h-full flex items-center" aria-label="Suscribirse">
-                        <img src="{{ asset('assets/img/footer/arrow.svg') }}" alt="" class="w-[16px] h-[16px]">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+  <path d="M8 12H16M12 8L16 12L12 16" stroke="#086AFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
                     </button>
                 </form>
 

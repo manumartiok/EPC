@@ -19,8 +19,8 @@
           <i class="fas fa-chevron-down transition-transform duration-300 group-[.open]:rotate-180"></i>
         </button>
         <ul class="submenu hidden pl-8 mt-1 space-y-1">
-          {{-- <li><a href="{{route('adm.home-ban')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Banner</a></li>
-          <li><a href="{{route('adm.home')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Contenido</a></li> --}}
+         <li><a href="{{route('adm.home-ban')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Banner</a></li>
+          <li><a href="{{route('adm.home')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Contenido</a></li> 
         </ul>
       </li>
       <li class="group">
@@ -34,11 +34,11 @@
       </li>
       <li class="group">
         <button class="flex justify-between items-center w-full py-2 px-3 hover:bg-gray-700 rounded transition focus:outline-none" onclick="toggleSubMenu(this)">
-          <span><i class="fas fa-book mr-2"></i>Catálogo</span>
+          <span><i class="fas fa-box mr-2"></i>Productos</span>
           <i class="fas fa-chevron-down transition-transform duration-300 group-[.open]:rotate-180"></i>
         </button>
         <ul class="submenu hidden pl-8 mt-1 space-y-1">
-          <li><a href="{{ route('adm.catalogo') }}" class="block py-1 px-2 hover:bg-gray-600 rounded">Contenido</a></li>
+          <li><a href="{{ route('adm.producto') }}" class="block py-1 px-2 hover:bg-gray-600 rounded">Productos</a></li>
         </ul>
       </li>
       <li class="group">
@@ -52,12 +52,12 @@
       </li>
       <li class="group">
         <button class="flex justify-between items-center w-full py-2 px-3 hover:bg-gray-700 rounded transition focus:outline-none" onclick="toggleSubMenu(this)">
-          <span><i class="fas fa-box mr-2"></i>Productos</span>
+          <span><i class="fas fa-book mr-2"></i>Catálogo</span>
           <i class="fas fa-chevron-down transition-transform duration-300 group-[.open]:rotate-180"></i>
         </button>
         <ul class="submenu hidden pl-8 mt-1 space-y-1">
-          <li><a href="{{ route('adm.producto') }}" class="block py-1 px-2 hover:bg-gray-600 rounded">Productos</a></li>
-        </ul>
+          <li><a href="{{ route('adm.catalogo') }}" class="block py-1 px-2 hover:bg-gray-600 rounded">Contenido</a></li>
+        </ul> 
       </li>
       <li class="group">
         <button class="flex justify-between items-center w-full py-2 px-3 hover:bg-gray-700 rounded transition focus:outline-none" onclick="toggleSubMenu(this)">
@@ -78,14 +78,7 @@
           <li><a href="{{route('adm.consulta')}}" class="block py-1 px-2 hover:bg-gray-600 rounded">Motivos de consulta</a></li>
         </ul>
       </li>
-      <li class="group">
-        <button class="flex justify-between items-center w-full py-2 px-3 hover:bg-gray-700 rounded transition focus:outline-none" onclick="toggleSubMenu(this)">
-          <span><i class="fas fa-dollar mr-2"></i>Solicitar presupuesto</span>
-          <i class="fas fa-chevron-down transition-transform duration-300 group-[.open]:rotate-180"></i>
-        </button>
-        <ul class="submenu hidden pl-8 mt-1 space-y-1">
-        </ul>
-      </li>
+
       {{-- <li class="group">
         <button class="flex justify-between items-center w-full py-2 px-3 hover:bg-gray-700 rounded transition focus:outline-none" onclick="toggleSubMenu(this)">
           <span><i class="fas fa-lock mr-2"></i>Zona privada</span>

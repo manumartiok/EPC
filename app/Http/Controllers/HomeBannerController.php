@@ -27,6 +27,7 @@ class HomeBannerController extends Controller
 
         $home_banners = new HomeBanner();
         $home_banners->orden = $request->orden;
+        $home_banners->texto_chico = $request->texto_chico;
         $home_banners->titulo = $request->titulo;
         $home_banners->texto = $request->texto;
 
@@ -65,6 +66,7 @@ class HomeBannerController extends Controller
 
         $home_banners = HomeBanner::find($request->home_banners_id) ?? new HomeBanner();
         $home_banners->orden = $request->orden;
+        $home_banners->texto_chico = $request->texto_chico;
         $home_banners->titulo = $request->titulo;
         $home_banners->texto = $request->texto;
 
@@ -128,6 +130,6 @@ class HomeBannerController extends Controller
             \App\Models\HomeBanner::where('id', $home_banners['id'])->update(['orden' => $home_banners['orden']]);
         }
 
-        return response()->json(['success' => true])->with('success', 'Acción realizada correctamente.');
+        return response()->json(['success' => true]);
     }
 }

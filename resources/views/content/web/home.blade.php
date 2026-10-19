@@ -1,18 +1,15 @@
 @php
     $home_banners = App\Models\HomeBanner::where('active', true)->orderBy('orden')->get();
-    $home = App\Models\Home::first();
+    $home = App\Models\Home::first() ?? new App\Models\Home();
+    $catalogo = App\Models\Catalogo::first();
 
     $novedades = App\Models\Novedade::where('active', true)
         ->where('destacado', true)
         ->orderBy('orden')
-        ->get(); 
+        ->get();
 
-    $marcas = App\Models\Marca::where('active', true)
+    $productos = App\Models\Producto::where('active', true)
         ->where('destacado', true)
-        ->orderBy('orden')
-        ->get(); 
-
-    $marcasfiltro = App\Models\Marca::where('active', true)
         ->orderBy('orden')
         ->get();
 @endphp
@@ -31,16 +28,16 @@
 </style>
 <div class="letra">
     {{-- CARRUSEL BANNER --}}
-    <div id="bannerCarousel" class="relative w-full h-[776px] overflow-hidden z-10">
+    <div id="bannerCarousel" class="relative w-full h-[768px] overflow-hidden bg-[#003879] z-10">
 
         @foreach($home_banners as $index => $banner)
-            <div class="carousel-slide absolute inset-0 transition-opacity duration-500 
+            <div class="carousel-slide absolute inset-0 transition-opacity duration-500
                 {{ $index === 0 ? 'opacity-100' : 'opacity-0' }}">
-                
+
                 {{-- VIDEO O IMAGEN --}}
                 @if (($banner->tipo_medio ?? 'imagen') === 'video')
                     <video class="absolute top-0 left-0 w-full h-full object-cover" autoplay muted loop playsinline>
-                        <source src="{{ asset($banner->video ?? $banner->foto) }}" type="video/mp4">
+                        <source src="{{ asset($banner->foto) }}" type="video/mp4">
                         Tu navegador no soporta video HTML5.
                     </video>
                 @else
@@ -49,178 +46,155 @@
                     </div>
                 @endif
 
-                <div class="absolute inset-0 bg-black/40 z-5"></div>
+                <div class="absolute inset-0 bg-black/40"></div>
 
-                {{-- CONTENIDO (MISMO DISEÑO QUE TENÍAS) --}}
-                <div class="relative h-full max-w-[1366px] mx-auto px-[5%] md:px-[71px] flex flex-col items-start text-white z-20">
-                    <h3 class="text-[35px] md:text-[46px] font-bold  mt-[314px] max-w-[850px]">
-                        {{ $banner->titulo }}
-                    </h3>
-                    <a href="{{route('productos')}}" class="mt-[73px] flex justify-center items-center bg-[#DE2222] text-white text-[14px] w-[154px] h-[46px] rounded-[14px] ">Ver productos</a>
+                {{-- CONTENIDO --}}
+                <div class="relative h-full max-w-[1366px] mx-auto px-[5%] lg:px-[71px] flex flex-col items-start justify-center text-white z-20 pt-[90px]">
+                    @if($banner->texto_chico)
+                        <p class="text-[16px] leading-[1.5] text-[#086AFF] uppercase">{{ $banner->texto_chico }}</p>
+                    @endif
+                    <h1 class="text-[36px] lg:text-[48px] leading-[1.2] font-bold max-w-[700px]">{{ $banner->titulo }}</h1>
+                    @if($banner->texto)
+                        <div class="mt-[24px] text-[16px] leading-[1.5] max-w-[600px]">{!! $banner->texto !!}</div>
+                    @endif
+
+                    <div class="mt-[32px] flex flex-wrap gap-[25px]">
+                        <a href="{{ route('productos') }}" class="flex items-center justify-center w-[184px] p-[10px] bg-[#086AFF] text-white text-[16px] leading-[1.5] uppercase">Ver productos</a>
+                        <a href="{{ route('catalogo') }}" class="flex items-center justify-center p-[10px] bg-white border border-[#086AFF] text-[#086AFF] text-[16px] leading-[1.5] uppercase">Descargar catálogo</a>
+                    </div>
                 </div>
             </div>
         @endforeach
 
-        {{-- BARRAS/PUNTOS DEL CARRUSEL --}}
+        {{-- PUNTOS DEL CARRUSEL --}}
         @if ($home_banners->count() > 1)
-            <div class="max-w-[1366px] mx-auto px-[5%] md:px-[71px] absolute bottom-[140px] left-0 right-0 flex justify-start gap-[8px] z-30">
+            <div class="max-w-[1366px] mx-auto px-[5%] lg:px-[71px] absolute bottom-[40px] left-0 right-0 flex justify-start gap-[8px] z-30">
                 @foreach ($home_banners as $index => $banner)
-                    <span class="carousel-dot h-[5px] w-[36px] rounded-[2px] cursor-pointer transition-all duration-300 z-50
+                    <span class="carousel-dot h-[5px] w-[36px] rounded-[2px] cursor-pointer transition-all duration-300
                          {{ $index === 0 ? 'bg-[#A60000]' : 'bg-[#D9D9D9]' }}"
                         data-index="{{ $index }}">
                     </span>
                 @endforeach
             </div>
         @endif
-
     </div>
-    {{-- contenido  --}}
-        <!-- Filtros -->
-        <div class="relative mt-[-100px] w-full max-w-[1366px] mx-auto px-[5%] md:px-[71px] z-[999]">
-            <x-product-search :action="route('productos')" :marcas="$marcasfiltro"/>
+
+    {{-- NOSOTROS --}}
+    <section class="bg-[#F2F5F8]">
+        <div class="max-w-[1366px] mx-auto px-[5%] lg:px-[71px] py-[80px] flex flex-col lg:flex-row gap-[40px] lg:gap-[24px] lg:items-start">
+            <div class="w-full lg:w-[600px] lg:shrink-0">
+                @if($home->texto_chico1)
+                    <p class="text-[16px] leading-[1.5] text-[#086AFF] uppercase">{{ $home->texto_chico1 }}</p>
+                @endif
+                <h2 class="text-[32px] lg:text-[40px] leading-[1.2] font-bold text-[#003879]">{{ $home->titulo1 }}</h2>
+                <div class="mt-[24px] text-[16px] leading-[1.5] text-[#303030] [&_p]:mb-[24px]">{!! $home->descripcion !!}</div>
+            </div>
+            @if($home->foto1)
+                <div class="w-full lg:w-[600px] h-[300px] lg:h-[400px] lg:ml-auto overflow-hidden">
+                    <img src="{{ asset($home->foto1) }}" alt="{{ $home->titulo1 }}" class="w-full h-full object-cover">
+                </div>
+            @endif
+        </div>
+    </section>
+
+    {{-- PRODUCTOS DESTACADOS --}}
+    <section class="bg-[#DEE7EE]">
+        <div class="max-w-[1366px] mx-auto px-[5%] lg:px-[71px] py-[60px]">
+            <div class="flex items-end justify-between gap-[16px] mb-[40px]">
+                <div>
+                    @if($home->texto_chico2)
+                        <p class="text-[16px] leading-[1.5] text-[#086AFF] uppercase">{{ $home->texto_chico2 }}</p>
+                    @endif
+                    <h2 class="text-[32px] lg:text-[40px] leading-[1.2] font-bold text-[#003879]">{{ $home->titulo2 }}</h2>
+                </div>
+                <a href="{{ route('productos') }}" class="shrink-0 flex items-center justify-center p-[10px] bg-white border border-[#086AFF] text-[#086AFF] text-[16px] leading-[1.5] uppercase">Ver todos</a>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[24px]">
+                @foreach($productos as $producto)
+                    <a href="{{ route('productos.detalle', ['id' => $producto->id]) }}"
+                       class="bg-white border border-[#DEDFE0] flex flex-col">
+                        <div class="w-full h-[230px] overflow-hidden flex items-center justify-center bg-white">
+                            @if(!empty($producto->foto))
+                                <img src="{{ asset($producto->foto) }}" alt="{{ $producto->nombre }}" class="w-full h-full object-contain">
+                            @endif
+                        </div>
+
+                        <div class="mx-[24px] border-t border-[#DEDFE0] flex items-center justify-between gap-[12px] h-[60px]">
+                            <h3 class="text-[16px] leading-[1.2] font-bold text-[#003879]">{{ $producto->nombre }}</h3>
+                            <img src="{{ asset('assets/img/productos/arrow-right.svg') }}" alt="" class="w-[16px] h-[16px] shrink-0">
+                        </div>
+                    </a>
+                @endforeach
+            </div>
+        </div>
+    </section>
+
+    {{-- CATÁLOGO --}}
+    <section class="bg-[#003879] text-white">
+        <div class="max-w-[1366px] mx-auto px-[5%] lg:px-[71px] py-[70px] flex flex-col lg:flex-row lg:items-center justify-between gap-[32px]">
+            <div>
+                @if($home->texto_chico3)
+                    <p class="text-[16px] leading-[1.5] uppercase">{{ $home->texto_chico3 }}</p>
+                @endif
+                <h2 class="text-[32px] lg:text-[40px] leading-[1.2] font-bold max-w-[624px]">{{ $home->titulo3 }}</h2>
+                @if($home->subtext3)
+                    <p class="mt-[24px] text-[16px] leading-[1.5] max-w-[495px]">{{ $home->subtext3 }}</p>
+                @endif
+            </div>
+            @if($catalogo && $catalogo->archivo)
+                <a href="{{ $catalogo->archivo }}" target="_blank" rel="noopener" download
+                   class="flex items-center justify-center w-full lg:w-[288px] p-[10px] bg-[#086AFF] text-white text-[16px] leading-[1.5] uppercase">Descargar catálogo</a>
+            @else
+                <a href="{{ route('catalogo') }}"
+                   class="flex items-center justify-center w-full lg:w-[288px] p-[10px] bg-[#086AFF] text-white text-[16px] leading-[1.5] uppercase">Descargar catálogo</a>
+            @endif
+        </div>
+    </section>
+
+    {{-- NOVEDADES --}}
+    <section class="max-w-[1366px] mx-auto px-[5%] lg:px-[71px] py-[60px]">
+        <div class="flex items-end justify-between gap-[16px] mb-[40px]">
+            <div>
+                @if($home->texto_chico4)
+                    <p class="text-[16px] leading-[1.5] text-[#086AFF] uppercase">{{ $home->texto_chico4 }}</p>
+                @endif
+                <h2 class="text-[32px] lg:text-[40px] leading-[1.2] font-bold text-[#003879]">{{ $home->titulo4 }}</h2>
+            </div>
+            <a href="{{ route('novedades') }}" class="shrink-0 flex items-center justify-center p-[10px] bg-white border border-[#086AFF] text-[#086AFF] text-[16px] leading-[1.5] uppercase">Ver todas</a>
         </div>
 
-    {{-- prodductos  --}}
-    <div class="max-w-[1366px] mx-auto px-[5%] md:px-[71px] mt-[70px] mb-[50px] g">
-        <div class="flex w-full justify-between mb-[24px]">
-            <h1 class="text-[32px] font-bold">{{ $home->titulo1 }}</h1>
-            <a href="{{route('productos')}}" class="flex items-center justify-center w-[122px] h-[46px] rounded-[14px] border border-[#DE2222] text-[#DE2222] text-[16px] font-bold">Ver todos</a>
-        </div>
-        {{-- items  --}}
-        <div class="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-[20px]">
-            @foreach($marcas as $marca)
-                <a href="{{ route('productos.categoria', $marca->id) }}" class="border border-gray-200 rounded-[13px] overflow-hidden hover:shadow-lg transition-shadow duration-300">
-                    <div class="w-full h-[262px] overflow-hidden ">
-                        @if(!empty($marca->foto))
-                            <img src="{{ asset($marca->foto) }}"
-                                alt="{{ $marca->texto }}"
-                                class="w-full h-full object-cover">
-                        @else
-                            <div class="w-full h-full flex items-center justify-center text-gray-400">
-                                Sin imagen
-                            </div>
-                        @endif
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[24px]">
+            @foreach($novedades as $item)
+                <a href="{{ route('novedades-detalle', ['id' => $item->id]) }}" class="group flex flex-col bg-white border border-[#ECEBEB] rounded-[4px] overflow-hidden">
+                    <div class="h-[294px] w-full overflow-hidden">
+                        <img src="{{ asset($item->foto) }}" alt="{{ $item->titulo }}" class="w-full h-full object-cover">
                     </div>
-
-                    <hr class="border-gray-200">
-
-                    <div class="p-4">
-                        <h3 class="text-[18px] font-semibold text-gray-700 text-center">
-                            {{ $marca->texto }}
-                        </h3>
+                    <div class="flex flex-col flex-1 p-[24px]">
+                        @if($item->texto_chico)
+                            <span class="text-[12px] leading-[1.5] font-bold text-[#00B1F6] uppercase">{{ $item->texto_chico }}</span>
+                        @endif
+                        <h3 class="mt-[8px] text-[24px] leading-[1.2] font-bold text-[#17181B]">{{ $item->titulo }}</h3>
+                        <div class="mt-[16px] text-[16px] leading-[1.5] text-[#17181B] line-clamp-2">{!! strip_tags($item->texto) !!}</div>
+                        <span class="mt-auto pt-[24px] text-[16px] leading-[1.5] font-bold text-[#17181B] uppercase group-hover:text-[#086AFF] transition-colors duration-200">Leer más</span>
                     </div>
                 </a>
             @endforeach
         </div>
-    </div>
+    </section>
 
-    {{-- foto1  --}}
-    <div class="max-w-[1366px] mx-auto px-[5%] md:px-[71px] mb-[50px]">
-    <div class="relative h-full max-h-[600px] md:h-[343px] rounded-[12px] overflow-hidden">
-
-        {{-- Imagen --}}
-        <img
-            src="{{ $home->foto1 }}"
-            alt=""
-            class="absolute inset-0 w-full h-full object-cover object-center"
-        >
-
-        {{-- Contenido --}}
-        <div class="relative z-10 h-full px-[40px] max-w-[830px] flex flex-col justify-center text-white">
-
-            <span class="text-[20px] font-bold ">
-                {{ $home->foto1_texto1 }}
-            </span>
-
-            <h2 class="text-[40px] font-bold mb-[10px]">
-                {{ $home->foto1_texto2 }}
-            </h2>
-
-            <p class="text-[16px] mb-[10px]">
-                {{ $home->foto1_texto3 }}
-            </p>
-
-            <a
-                href="{{ route('contacto') }}"
-                class=" self-start  py-[14px] px-[12px] md:px-[28px]  rounded-[14px] bg-[#DE2222] text-white font-bold"
-            >
-                {{ $home->foto1_texto_boton }}
-            </a>
-
-        </div>
-    </div>
-</div>
-    {{-- nosotrs  --}}
-    <div class="w-full flex flex-col md:flex-row h-auto md:h-[600px]">
-            {{-- foto --}}
-            <div class="w-full md:w-1/2 h-full">
-                <img src="{{$home->foto2}}" alt="" class="w-full h-full object-cover ">
-            </div>
-            {{-- texto --}}
-            <div class="w-full md:w-1/2 h-full bg-[#A60000] flex flex-col px-[5%] md:px-[64px] pt-[24px] md:pt-[54px] pb-[24px]">
-                <h1 class="text-[32px] text-white font-bold mb-[30px]">{{$home->titulo2}}</h1>
-                <h3 class="text-[16px] text-white">{!! $home->descripcion !!}</h3>
-                <a href="{{route('nosotros')}}" class="mt-[50px] flex items-center justify-center w-[110px] h-[46px] rounded-[14px] bg-white text-[#A60000] text-[16px] font-bold">Ver más</a>
-            </div>
-    </div>
-    {{-- novedades --}}
-    <div class="max-w-[1366px] mx-auto px-[5%] md:px-[71px] mt-[70px] mb-[50px]">
-        <div class="flex w-full justify-between">
-            <h1 class="text-[32px] font-bold">{{$home->titulo3}}</h1>
-            <a href="{{route('novedades')}}" class="flex items-center justify-center w-[122px] h-[46px] rounded-[14px] border border-[#DE2222] text-[#DE2222] text-[16px] font-bold">Ver todos</a>
-        </div>
-        {{-- items  --}}
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[24px] mt-[24px]">
-             @foreach($novedades as $item)
-            <div class="group w-full flex flex-col border border-[#DDDDE0] rounded-[8px]">
-
-                <img src="{{ $item->foto }}"    
-                     class="h-[260px] w-full object-cover"
-                     alt="{{ $item->titulo }}">
-
-                <div class="flex flex-col p-[24px]">
-
-                    <h2 class="text-[18px] mb-[10px] font-bold">
-                        {{ $item->titulo }}
-                    </h2>
-
-                    <div class="text-[16px] text-[#74716A]"
-                         style="
-                            display: -webkit-box;
-                            -webkit-line-clamp: 2;
-                            -webkit-box-orient: vertical;
-                            overflow: hidden;
-                            text-overflow: ellipsis;
-                            line-height: 1.2em;
-                            max-height: 2.4em;
-                         ">
-                        {!! $item->texto !!}
-                    </div>
-                    
-                    <hr class="flex border-[#DDDDE0] mb-[15px] mt-[40px]">
-
-                    <div class="flex justify-between ">
-                        <a href="{{ route('novedades-detalle', ['id' => $item->id]) }}"
-                           class="text-[16px] text-[#242424]/50 group-hover:text-black transition-colors duration-200">
-                            Leer más
-                        </a>
-
-                        <a href="{{ route('novedades-detalle', ['id' => $item->id]) }}">
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                             width="24"
-                             height="24"
-                             viewBox="0 0 24 24"
-                             class="fill-[#414047] group-hover:fill-[#DE2222] transition-colors duration-200">
-                            <path d="M12 4L10.59 5.41L16.17 11H4V13H16.17L10.59 18.59L12 20L20 12L12 4Z"/>
-                        </svg>
-                        </a>
-                    </div>
+    {{-- CERTIFICACIONES --}}
+    @if($home->texto5)
+        <section class="bg-[#F2F5F8]">
+            <div class="max-w-[1366px] mx-auto px-[5%] lg:px-[71px] py-[60px] flex flex-col lg:flex-row lg:items-center justify-between gap-[32px]">
+                <p class="text-[24px] leading-[1.5] text-[#303030] max-w-[533px]">{{ $home->texto5 }}</p>
+                <div class="flex items-center gap-[22px]">
+                    <img src="{{ asset('assets/img/1.png') }}" alt="" class="w-[87px] h-[87px] object-contain">
+                    <img src="{{ asset('assets/img/2.png') }}" alt="" class="w-[87px] h-[96px] object-contain">
                 </div>
             </div>
-        @endforeach
-        </div>
-    </div>
-
+        </section>
+    @endif
 </div>
 @endsection
 

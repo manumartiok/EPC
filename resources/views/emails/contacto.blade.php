@@ -10,7 +10,6 @@
 @php
     $items = collect($data['productos'] ?? [])->filter(fn ($i) => !empty($i['producto_id']));
     $nombresProductos = \App\Models\Producto::whereIn('id', $items->pluck('producto_id'))->pluck('nombre', 'id');
-    $nombresSecciones = \App\Models\Marca::whereIn('id', $items->pluck('seccion_id')->filter())->pluck('nombre', 'id');
 @endphp
 @if($items->isNotEmpty())
     <p><strong>Productos:</strong></p>
@@ -18,7 +17,7 @@
         @foreach($items as $item)
             <li>
                 {{ $nombresProductos[$item['producto_id']] ?? 'Producto #'.$item['producto_id'] }}
-                @if(!empty($item['seccion_id'])) — {{ $nombresSecciones[$item['seccion_id']] ?? '' }} @endif
+                @if(!empty($item['seccion'])) — Sección: {{ $item['seccion'] }} @endif
                 — Cantidad: {{ $item['cantidad'] ?? 0 }}
             </li>
         @endforeach

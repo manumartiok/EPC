@@ -6,7 +6,7 @@
 
    {{-- cabezal --}}
     <div>
-        <h3 class="text-[20px] font-bold text-gray-500">Editar banner Home</h3>
+        <h3 class="text-[20px] font-bold text-gray-500">Crear banner Home</h3>
         <hr class="mx-6">
     </div>
     
@@ -14,11 +14,11 @@
     <div class="mx-20 pt-6" id="app">
         <div class="border border-rounded p-4">
             <div>
-                <h3 class="text-[18px] font-semibold  text-gray-600">Editar banner</h3>
+                <h3 class="text-[18px] font-semibold  text-gray-600">Nuevo banner</h3>
             </div>
             <hr class="my-3">
             
-            <form method="POST" action="{{ route('adm.home-ban-update') }}" enctype="multipart/form-data" @submit.prevent="handleSubmit">
+            <form method="POST" action="{{ route('adm.home-ban-store') }}" enctype="multipart/form-data" @submit.prevent="handleSubmit">
                 @csrf
                 <input type="hidden" name="home_banners_id" value="{{ $home_banner->id ?? '' }}">
 
@@ -55,6 +55,12 @@
                     </div>
 
                     <div class="mb-4">
+                        <label class="block text-gray-700 font-medium mb-2" for="texto_chico">Texto chico</label>
+                        <input type="text" id="texto_chico" name="texto_chico" placeholder="Texto chico" value="{{ $home_banner->texto_chico ?? '' }}"
+                            class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <div class="mb-4">
                         <label class="block text-gray-700 font-medium mb-2" for="titulo">Título</label>
                         <input type="text" id="titulo" name="titulo" placeholder="Título" value="{{ $home_banner->titulo ?? '' }}"
                             class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -67,7 +73,7 @@
                             class="ckeditor w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
                     </div>
                 </div>
-                <button type="submit" class="border rounded p-4 bg-white hover:bg-gray-100">Actualizar</button>
+                <button type="submit" class="border rounded p-4 bg-white hover:bg-gray-100">Crear</button>
             </form>
         </div>            
     </div>

@@ -1,7 +1,8 @@
 @php
     $contacto_contenido = App\Models\Contacto::first();
-    $productos_lista = App\Models\Producto::where('active', true)->orderBy('nombre')->get(['id', 'nombre', 'foto']);
-    $secciones_lista = App\Models\Marca::where('active', true)->orderBy('nombre')->get(['id', 'nombre']);
+    $productos_lista = App\Models\Producto::where('active', true)->orderBy('nombre')->get(['id', 'nombre', 'foto', 'caracteristicas_tecnicas']);
+    // Secciones de cada producto (columna "sección" de sus características técnicas)
+    $secciones_por_producto = $productos_lista->mapWithKeys(fn ($p) => [$p->id => $p->secciones])->filter();
     $motivos = App\Models\Consulta::where('active', true)->orderBy('orden')->pluck('nombre');
 
     // Si se llega desde "Consultar" de un producto, el mensaje viene armado con su nombre
@@ -155,11 +156,8 @@
 
         <div class="flex flex-col gap-[4px] w-full lg:w-[352px]">
             <label class="{{ $labelClass }}">Sección</label>
-            <select data-field="seccion_id" class="{{ $selectClass }} border-[#EDE9E2]" style="{{ $chevron }}">
+            <select data-field="seccion" disabled class="seccion-select {{ $selectClass }} border-[#EDE9E2] disabled:opacity-50 disabled:cursor-not-allowed" style="{{ $chevron }}">
                 <option value="">Seleccionar sección</option>
-                @foreach($secciones_lista as $s)
-                    <option value="{{ $s->id }}">{{ $s->nombre }}</option>
-                @endforeach
             </select>
         </div>
 
@@ -185,6 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const recaptchaSiteKey = "{{ env('RECAPTCHA_SITE_KEY') }}";
     const wrap = document.getElementById('productosWrap');
     const tpl = document.getElementById('productoRowTpl');
+    const seccionesPorProducto = @json($secciones_por_producto->toArray());
 
     // Solo números en teléfono y CUIT
     ['telefono', 'cuit'].forEach(id => {
@@ -205,19 +204,29 @@ document.addEventListener('DOMContentLoaded', () => {
     function addRow() {
         const row = tpl.content.firstElementChild.cloneNode(true);
         const select = row.querySelector('.producto-select');
+        const seccion = row.querySelector('.seccion-select');
         const foto = row.querySelector('.producto-foto');
         const cant = row.querySelector('.cant-input');
+
+        // las secciones dependen del producto elegido
+        function cargarSecciones() {
+            const lista = seccionesPorProducto[select.value] || [];
+            const vacio = !select.value ? 'Seleccionar sección' : (lista.length ? 'Seleccionar sección' : 'Sin secciones');
+            seccion.replaceChildren(new Option(vacio, ''), ...lista.map(v => new Option(v, v)));
+            seccion.disabled = lista.length === 0;
+        }
 
         select.addEventListener('change', () => {
             const src = select.selectedOptions[0]?.dataset.foto;
             if (src) { foto.src = src; foto.classList.remove('hidden'); }
             else { foto.removeAttribute('src'); foto.classList.add('hidden'); }
+            cargarSecciones();
         });
         row.querySelector('.cant-mas').addEventListener('click', () => { cant.value = (parseInt(cant.value) || 0) + 1; });
         row.querySelector('.cant-menos').addEventListener('click', () => { cant.value = Math.max(0, (parseInt(cant.value) || 0) - 1); });
         row.querySelector('.quitar-producto').addEventListener('click', () => {
             if (wrap.children.length > 1) { row.remove(); }
-            else { select.value = ''; select.dispatchEvent(new Event('change')); row.querySelector('[data-field="seccion_id"]').value = ''; cant.value = 0; }
+            else { select.value = ''; select.dispatchEvent(new Event('change')); cant.value = 0; }
             reindex();
         });
 

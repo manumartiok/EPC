@@ -55,6 +55,12 @@
                     </div>
 
                     <div class="mb-4">
+                        <label class="block text-gray-700 font-medium mb-2" for="texto_chico">Texto chico</label>
+                        <input type="text" id="texto_chico" name="texto_chico" placeholder="Texto chico" value="{{ $home_banner->texto_chico ?? '' }}"
+                            class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <div class="mb-4">
                         <label class="block text-gray-700 font-medium mb-2" for="titulo">Título</label>
                         <input type="text" id="titulo" name="titulo" placeholder="Título" value="{{ $home_banner->titulo ?? '' }}"
                             class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -63,7 +69,7 @@
                     {{-- Texto --}}
                     <div class="mb-4">
                         <label class="block text-gray-700 font-medium mb-2" for="texto">Texto</label>
-                        <textarea name="texto" id="texto" class="ckeditor w-full border border-gray-300 rounded px-4 py-2" rows="4">{{ $home_banner->texto ?? '' }}</textarea>
+                        <textarea name="texto" id="texto" class="ckeditor w-full border border-gray-300 rounded px-4 py-2" rows="4">{!! $home_banner->texto ?? '' !!}</textarea>
                     </div>
                 </div>
                 <button type="submit" class="border rounded p-4 bg-white hover:bg-gray-100">Actualizar</button>

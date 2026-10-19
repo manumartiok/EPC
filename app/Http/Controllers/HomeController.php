@@ -8,6 +8,14 @@ use Illuminate\Support\Facades\Storage;
 
 class HomeController extends Controller
 {
+    private const CAMPOS_TEXTO = [
+        'texto_chico1', 'titulo1', 'descripcion',
+        'texto_chico2', 'titulo2',
+        'texto_chico3', 'titulo3', 'subtext3',
+        'texto_chico4', 'titulo4',
+        'texto5',
+    ];
+
     public function show()
     {
         $home = Home::first() ?? new Home();
@@ -18,35 +26,28 @@ class HomeController extends Controller
     public function update(Request $request)
     {
         $request->validate([
-            'titulo1'            => 'nullable|string|max:255',
-            'foto1'              => 'nullable|image|max:2048',
-            'foto1_texto1'       => 'nullable|string|max:255',
-            'foto1_texto2'       => 'nullable|string|max:255',
-            'foto1_texto3'       => 'nullable|string|max:255',
-            'foto1_texto_boton'  => 'nullable|string|max:255',
-            'foto2'              => 'nullable|image|max:2048',
-            'titulo2'            => 'nullable|string|max:255',
-            'descripcion'        => 'nullable|string',
-            'titulo3'            => 'nullable|string|max:255',
+            'foto1'        => 'nullable|image|max:2048',
+            'texto_chico1' => 'nullable|string|max:255',
+            'titulo1'      => 'nullable|string|max:255',
+            'descripcion'  => 'nullable|string',
+            'texto_chico2' => 'nullable|string|max:255',
+            'titulo2'      => 'nullable|string|max:255',
+            'texto_chico3' => 'nullable|string|max:255',
+            'titulo3'      => 'nullable|string|max:255',
+            'subtext3'     => 'nullable|string|max:255',
+            'texto_chico4' => 'nullable|string|max:255',
+            'titulo4'      => 'nullable|string|max:255',
+            'texto5'       => 'nullable|string|max:255',
         ]);
 
         $home = Home::first() ?? new Home();
 
-        $home->titulo1           = $request->titulo1;
-        $home->foto1_texto1      = $request->foto1_texto1;
-        $home->foto1_texto2      = $request->foto1_texto2;
-        $home->foto1_texto3      = $request->foto1_texto3;
-        $home->foto1_texto_boton = $request->foto1_texto_boton;
-        $home->titulo2           = $request->titulo2;
-        $home->descripcion       = $request->descripcion;
-        $home->titulo3           = $request->titulo3;
+        foreach (self::CAMPOS_TEXTO as $campo) {
+            $home->$campo = $request->input($campo);
+        }
 
         if ($request->hasFile('foto1')) {
             $this->handleImageUpload($home, $request->file('foto1'), 'foto1');
-        }
-
-        if ($request->hasFile('foto2')) {
-            $this->handleImageUpload($home, $request->file('foto2'), 'foto2');
         }
 
         $home->save();
